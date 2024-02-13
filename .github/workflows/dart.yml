@@ -44,12 +44,12 @@ jobs:
       - name: Clean Xcode Project
         run: xcodebuild clean -workspace ios/Runner.xcworkspace -scheme Runner -configuration Release
 
-      - name: Reinstall CocoaPods
-        run: |
-          cd ios
-          pod deintegrate
-          pod install
-          cd ..
+      #- name: Reinstall CocoaPods
+       # run: |
+        #  cd ios
+        #  pod deintegrate
+         # pod install
+         # cd ..
 
       - name: Build resolve Swift dependencies
         run: xcodebuild -resolvePackageDependencies -workspace ios/Runner.xcworkspace -scheme Runner -configuration Release
