@@ -1,6 +1,0 @@
-framework module safe_device {
-  umbrella header "safe_device-umbrella.h"
-
-  export *
-  module * { export * }
-}
