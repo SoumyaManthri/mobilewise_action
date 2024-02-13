@@ -38,20 +38,11 @@ jobs:
         with:
           flutter-version: 3.16
 
-      
-
       - name: Restore packages
         run: flutter pub get
 
       - name: Clean Xcode Project
         run: xcodebuild clean -workspace ios/Runner.xcworkspace -scheme Runner -configuration Release
-
-      #- name: Reinstall CocoaPods
-       # run: |
-        #  cd ios
-        #  pod deintegrate
-         # pod install
-         # cd ..
 
       - name: Build resolve Swift dependencies
         run: xcodebuild -resolvePackageDependencies -workspace ios/Runner.xcworkspace -scheme Runner -configuration Release
@@ -75,3 +66,9 @@ jobs:
         with:
           name: ios-build-distribution
           path: build-output/ios
+
+      - name: Create placeholder files (TEMP PATCH) 
+        if: ${{ failure() }} 
+        run: |
+          touch ios/Pods/Target\ Support\ Files/Pods-Runner/Pods-Runner-frameworks-Release-input-files.xcfilelist
+          touch ios/Pods/Target\ Support\ Files/Pods-Runner/Pods-Runner-frameworks-Release-output-files.xcfilelist 
