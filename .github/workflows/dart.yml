@@ -36,6 +36,10 @@ jobs:
         with:
           flutter-version: 3.16
 
+      - name: Getting into root directory
+        run: |
+          cd flutter_mobilewise-main
+
       - name: Restore packages
         run: flutter pub get
 
