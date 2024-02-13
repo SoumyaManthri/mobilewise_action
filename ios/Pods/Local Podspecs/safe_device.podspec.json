@@ -1,0 +1,29 @@
+{
+  "name": "safe_device",
+  "version": "1.0.0",
+  "summary": "Jailbroken, root, emulator and mock location detection",
+  "description": "Jailbroken, root, emulator and mock location detection",
+  "homepage": "https://github.com/ufukhawk/safe_device",
+  "license": {
+    "file": "../LICENSE"
+  },
+  "authors": {
+    "Ufuk Zimmerman": "ufukzimmerman@gmail.com"
+  },
+  "source": {
+    "path": "."
+  },
+  "source_files": "Classes/**/*",
+  "public_header_files": "Classes/**/*.h",
+  "dependencies": {
+    "Flutter": [
+
+    ],
+    "DTTJailbreakDetection": [
+
+    ]
+  },
+  "platforms": {
+    "ios": "8.0"
+  }
+}
