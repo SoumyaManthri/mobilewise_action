@@ -1,0 +1,2660 @@
+{
+  "appId": "650a6d3c-3005-4ca3-903a-45eabb66e01d",
+  "userName": "arjun@vassarlabs.com",
+  "forms": [
+    {
+      "formKey": "rf1",
+      "formName": "Report Event",
+      "entityKey": "failure_entity",
+      "parentEntityKey": null,
+      "fields": [
+        {
+          "key": "failure_category",
+          "label": "Event Category",
+          "uitype": "dropdown",
+          "datatype": "string",
+          "mandatory": true,
+          "values": [
+            {
+              "value": "Out of Box Failure"
+            },
+            {
+              "value": "Quality Event"
+            },
+            {
+              "value": "Warranty"
+            }
+          ]
+        },
+        {
+          "key": "event_type",
+          "label": "Type of Discrepancy",
+          "uitype": "dropdown",
+          "datatype": "string",
+          "mandatory": true,
+          "values": [
+            {
+              "value": "Visual"
+            },
+            {
+              "value": "Machining"
+            },
+            {
+              "value": "Will not Operate"
+            },
+            {
+              "value": "Incorrect Build"
+            },
+            {
+              "value": "Missing Hardware"
+            },
+            {
+              "value": "Missing Installed Component"
+            },
+            {
+              "value": "Freight Damage"
+            },
+            {
+              "value": "Thermal Event"
+            }
+          ]
+        },
+        {
+          "key": "product_type",
+          "label": "Product Type",
+          "uitype": "dropdown",
+          "datatype": "string",
+          "mandatory": true,
+          "values": [
+            {
+              "value": "Complete Door Package"
+            },
+            {
+              "value": "Panel"
+            },
+            {
+              "value": "Jamb"
+            },
+            {
+              "value": "Threshold"
+            },
+            {
+              "value": "Transom"
+            },
+            {
+              "value": "Header"
+            },
+            {
+              "value": "Hardware Kit",
+              "decision_node": {
+                "conditions": {
+                  "default": {
+                    "subform": "rf1.1"
+                  }
+                }
+              }
+            },
+            {
+              "value": "Controller"
+            },
+            {
+              "value": "Sensors"
+            },
+            {
+              "value": "Motor Gearbox"
+            },
+            {
+              "value": "Glass"
+            }
+          ]
+        }
+      ],
+      "buttons": [
+        {
+          "key": "rf1button",
+          "label": "Next",
+          "uitype": "button",
+          "button_type": 1,
+          "decision_node": {
+            "source": [
+              "event_type",
+              "product_type_info"
+            ],
+            "conditions": {
+              "default#default": {
+                "subform": "rf2"
+              },
+              "Freight Damage#default": {
+                "subform": "rf3"
+              },
+              "Thermal Event#default": {
+                "subform": "rf4"
+              },
+              "default#Entire Hardware Kit": {
+                "subform": "rf5"
+              },
+              "Freight Damage#Entire Hardware Kit": {
+                "subform": "rf6"
+              },
+              "Thermal Event#Entire Hardware Kit": {
+                "subform": "rf7"
+              },
+              "default#Components within Hardware Kit": {
+                "subform": "rf8"
+              },
+              "Freight Damage#Components within Hardware Kit": {
+                "subform": "rf9"
+              },
+              "Thermal Event#Components within Hardware Kit": {
+                "subform": "rf10"
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "formKey": "rf1.1",
+      "formName": "Report Event",
+      "entityKey": "failure_entity",
+      "parentEntityKey": null,
+      "fields": [
+        {
+          "key": "product_type_info",
+          "label": "Hardware Kit Information",
+          "uitype": "dropdown",
+          "datatype": "string",
+          "mandatory": true,
+          "values": [
+            {
+              "value": "Entire Hardware Kit"
+            },
+            {
+              "value": "Components within Hardware Kit"
+            }
+          ]
+        }
+      ],
+      "buttons": []
+    },
+    {
+      "formKey": "rf2",
+      "formName": "Report Event",
+      "entityKey": "failure_entity",
+      "parentEntityKey": null,
+      "fields": [
+        {
+          "key": "issue_desc",
+          "label": "Issue Description",
+          "uitype": "textbox",
+          "datatype": "string",
+          "mandatory": true,
+          "hint": "Write Description",
+          "max": 200
+        },
+        {
+          "key": "branch",
+          "label": "Branch",
+          "uitype": "dropdown",
+          "datatype": "string",
+          "mandatory": true,
+          "hint": "Select Branch",
+          "values_from_api": {
+            "url": "https://dev.iqtoolboxquality.iq360.cloud/stanley/branchData",
+            "type": "GET",
+            "response_key": "branchName"
+          }
+        },
+        {
+          "key": "customer",
+          "label": "Customer",
+          "uitype": "dropdown",
+          "datatype": "string",
+          "mandatory": false,
+          "hint": "Select Customer",
+          "allow_custom_entry": true,
+          "values_from_api": {
+            "url": "https://dev.iqtoolboxquality.iq360.cloud/stanley/customer-data",
+            "type": "GET",
+            "response_key": "customerName"
+          }
+        },
+        {
+          "key": "customer_location",
+          "label": "Customer Address",
+          "uitype": "address",
+          "datatype": "string",
+          "mandatory": true,
+          "hint": "Enter Customer Address",
+          "max": 100
+        },
+        {
+          "key": "order_no",
+          "label": "Sales order # / Service order #",
+          "uitype": "textbox",
+          "datatype": "int",
+          "mandatory": true,
+          "hint": "Enter Order #",
+          "max": 10
+        },
+        {
+          "key": "event_line_number",
+          "label": "Line Item #",
+          "uitype": "textbox",
+          "datatype": "int",
+          "mandatory": false,
+          "hint": "Enter Line Item #",
+          "max": 12
+        },
+        {
+          "key": "door_id",
+          "label": "Door Type",
+          "uitype": "dropdown",
+          "datatype": "string",
+          "mandatory": true,
+          "hint": "Select Door Type",
+          "values_from_api": {
+            "url": "https://dev.iqtoolboxquality.iq360.cloud/stanley/doors",
+            "type": "GET",
+            "response_key": "door_name"
+          }
+        },
+        {
+          "key": "part_desc",
+          "label": "Part Description",
+          "uitype": "dropdown",
+          "datatype": "string",
+          "hint": "Select Part Description",
+          "mandatory": true,
+          "values_from_api": {
+            "url": "https://dev.iqtoolboxquality.iq360.cloud/stanley/door-parts",
+            "type": "POST",
+            "response_key": "description",
+            "request_key": [
+              {
+                "form_key": "door_id",
+                "key": "doorName"
+              }
+
+            ],
+            "values": [
+              {
+                "value": "OTHER",
+                "decision_node": {
+                  "conditions": {
+                    "default": {
+                      "subform": "rf2.3"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "key": "part_no",
+          "label": "Part #",
+          "uitype": "dropdown",
+          "datatype": "string",
+          "hint": "Select Part #",
+          "mandatory": true,
+          "values_from_api": {
+            "url": "https://dev.iqtoolboxquality.iq360.cloud/stanley/door-parts",
+            "type": "POST",
+            "response_key": "part_number",
+            "request_key": [
+              {
+                "form_key": "door_id",
+                "key": "doorName"
+              }
+            ],
+            "values": [
+              {
+                "value": "OTHER",
+                "decision_node": {
+                  "conditions": {
+                    "default": {
+                      "subform": "rf2.4"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "key": "quantity_type",
+          "label": "Quantity Type",
+          "uitype": "dropdown",
+          "datatype": "string",
+          "mandatory": true,
+          "values": [
+            {
+              "value": "Length",
+              "decision_node": {
+                "conditions": {
+                  "default": {
+                    "subform": "rf2.1"
+                  }
+                }
+              }
+            },
+            {
+              "value": "Piece Count",
+              "decision_node": {
+                "conditions": {
+                  "default": {
+                    "subform": "rf2.2"
+                  }
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "buttons": [
+        {
+          "key": "rf2button",
+          "label": "Next",
+          "uitype": "button",
+          "button_type": 1,
+          "decision_node": {
+            "source": [
+              "failure_category"
+            ],
+            "conditions": {
+              "default": {
+                "subform": "rf11.1"
+              },
+              "Quality Event": {
+                "subform": "rf11"
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "formKey": "rf2.1",
+      "formName": "Report Event",
+      "entityKey": "failure_entity",
+      "parentEntityKey": null,
+      "fields": [
+        {
+          "key": "quantity_top_header",
+          "label": "Length(Inches)",
+          "uitype": "numeric_textbox",
+          "datatype": "double",
+          "mandatory": true,
+          "hint": "Enter Length",
+          "default": "0",
+          "numericFieldChange": "0.25"
+        }
+      ]
+    },
+    {
+      "formKey": "rf2.2",
+      "formName": "Report Event",
+      "entityKey": "failure_entity",
+      "parentEntityKey": null,
+      "fields": [
+        {
+          "key": "quantity",
+          "label": "Quantity",
+          "uitype": "numeric_textbox",
+          "datatype": "int",
+          "mandatory": true,
+          "hint": "Enter Quantity",
+          "default": "0",
+          "numericFieldChange": "1.0"
+        }
+      ]
+    },
+    {
+      "formKey": "rf2.3",
+      "formName": "Report Event",
+      "entityKey": "failure_entity",
+      "parentEntityKey": null,
+      "fields": [
+        {
+          "key": "other_part_desc",
+          "label": "Part Description",
+          "uitype": "textbox",
+          "datatype": "string",
+          "mandatory": true,
+          "hint": "Enter Part Description"
+        }
+      ]
+    },
+    {
+      "formKey": "rf2.4",
+      "formName": "Report Event",
+      "entityKey": "failure_entity",
+      "parentEntityKey": null,
+      "fields": [
+        {
+          "key": "other_part_no",
+          "label": "Part #",
+          "uitype": "textbox",
+          "datatype": "string",
+          "mandatory": true,
+          "hint": "Enter Part #"
+        }
+      ]
+    },
+    {
+      "formKey": "rf3",
+      "formName": "Report Event",
+      "entityKey": "failure_entity",
+      "parentEntityKey": null,
+      "fields": [
+        {
+          "key": "issue_desc",
+          "label": "Issue Description",
+          "uitype": "textbox",
+          "datatype": "string",
+          "mandatory": true,
+          "hint": "Write Description",
+          "max": 200
+        },
+        {
+          "key": "branch",
+          "label": "Branch",
+          "uitype": "dropdown",
+          "datatype": "string",
+          "mandatory": true,
+          "hint": "Select Branch",
+          "values_from_api": {
+            "url": "https://dev.iqtoolboxquality.iq360.cloud/stanley/branchData",
+            "type": "GET",
+            "response_key": "branchName"
+          }
+        },
+        {
+          "key": "customer",
+          "label": "Customer",
+          "uitype": "dropdown",
+          "datatype": "string",
+          "mandatory": false,
+          "hint": "Select Customer",
+          "allow_custom_entry": true,
+          "values_from_api": {
+            "url": "https://dev.iqtoolboxquality.iq360.cloud/stanley/customer-data",
+            "type": "GET",
+            "response_key": "customerName"
+          }
+        },
+        {
+          "key": "customer_location",
+          "label": "Customer Address",
+          "uitype": "address",
+          "datatype": "string",
+          "mandatory": true,
+          "hint": "Enter Customer Address",
+          "max": 100
+        },
+        {
+          "key": "order_no",
+          "label": "Sales order # / Service order #",
+          "uitype": "textbox",
+          "datatype": "int",
+          "mandatory": true,
+          "hint": "Enter Order #",
+          "max": 10
+        },
+        {
+          "key": "event_line_number",
+          "label": "Line Item #",
+          "uitype": "textbox",
+          "datatype": "int",
+          "mandatory": false,
+          "hint": "Enter Line Item #",
+          "max": 12
+        },
+        {
+          "key": "door_id",
+          "label": "Door Type",
+          "uitype": "dropdown",
+          "datatype": "string",
+          "mandatory": true,
+          "hint": "Select Door Type",
+          "values_from_api": {
+            "url": "https://dev.iqtoolboxquality.iq360.cloud/stanley/doors",
+            "type": "GET",
+            "response_key": "door_name"
+          }
+        },
+        {
+          "key": "part_desc",
+          "label": "Part Description",
+          "uitype": "dropdown",
+          "datatype": "string",
+          "hint": "Select Part Description",
+          "mandatory": true,
+          "values_from_api": {
+            "url": "https://dev.iqtoolboxquality.iq360.cloud/stanley/door-parts",
+            "type": "POST",
+            "response_key": "description",
+            "request_key": [
+              {
+                "form_key": "door_id",
+                "key": "doorName"
+              }
+
+            ],
+            "values": [
+              {
+                "value": "OTHER",
+                "decision_node": {
+                  "conditions": {
+                    "default": {
+                      "subform": "rf2.3"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "key": "part_no",
+          "label": "Part #",
+          "uitype": "dropdown",
+          "datatype": "string",
+          "hint": "Select Part #",
+          "mandatory": true,
+          "values_from_api": {
+            "url": "https://dev.iqtoolboxquality.iq360.cloud/stanley/door-parts",
+            "type": "POST",
+            "response_key": "part_number",
+            "request_key": [
+              {
+                "form_key": "door_id",
+                "key": "doorName"
+              }
+            ],
+            "values": [
+              {
+                "value": "OTHER",
+                "decision_node": {
+                  "conditions": {
+                    "default": {
+                      "subform": "rf2.4"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "key": "quantity_type",
+          "label": "Quantity Type",
+          "uitype": "dropdown",
+          "datatype": "string",
+          "mandatory": true,
+          "values": [
+            {
+              "value": "Length",
+              "decision_node": {
+                "conditions": {
+                  "default": {
+                    "subform": "rf2.1"
+                  }
+                }
+              }
+            },
+            {
+              "value": "Piece Count",
+              "decision_node": {
+                "conditions": {
+                  "default": {
+                    "subform": "rf2.2"
+                  }
+                }
+              }
+            }
+          ]
+        },
+        {
+          "key": "sto_po_num",
+          "label": "STO/PO #",
+          "uitype": "textbox",
+          "datatype": "int",
+          "mandatory": true,
+          "hint": "Enter STO/PO #",
+          "max": 10
+        },
+        {
+          "key": "tracking_num",
+          "label": "Bill of Lading / Tracking Number",
+          "uitype": "textbox",
+          "datatype": "int",
+          "mandatory": true,
+          "hint": "Enter Bill or Tracking #",
+          "max": 30
+        },
+        {
+          "key": "shipping_date",
+          "label": "Shipping Date",
+          "uitype": "date",
+          "datatype": "string",
+          "mandatory": true
+        },
+        {
+          "key": "shipping_origin",
+          "label": "Shipping Origin",
+          "uitype": "dropdown",
+          "datatype": "string",
+          "mandatory": true,
+          "hint": "Select Origin",
+          "values": [
+            {
+              "value": "Farmington, CT"
+            },
+            {
+              "value": "Mt Comfort Indiana"
+            }
+          ]
+        }
+      ],
+      "buttons": [
+        {
+          "key": "rf3button",
+          "label": "Next",
+          "uitype": "button",
+          "button_type": 1,
+          "decision_node": {
+            "source": [
+              "failure_category"
+            ],
+            "conditions": {
+              "default": {
+                "subform": "rf11.1"
+              },
+              "Quality Event": {
+                "subform": "rf11"
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "formKey": "rf4",
+      "formName": "Report Event",
+      "entityKey": "failure_entity",
+      "parentEntityKey": null,
+      "fields": [
+        {
+          "key": "issue_desc",
+          "label": "Issue Description",
+          "uitype": "textbox",
+          "datatype": "string",
+          "mandatory": true,
+          "hint": "Write Description",
+          "max": 200
+        },
+        {
+          "key": "branch",
+          "label": "Branch",
+          "uitype": "dropdown",
+          "datatype": "string",
+          "mandatory": true,
+          "hint": "Select Branch",
+          "values_from_api": {
+            "url": "https://dev.iqtoolboxquality.iq360.cloud/stanley/branchData",
+            "type": "GET",
+            "response_key": "branchName"
+          }
+        },
+        {
+          "key": "customer",
+          "label": "Customer",
+          "uitype": "dropdown",
+          "datatype": "string",
+          "mandatory": false,
+          "hint": "Select Customer",
+          "allow_custom_entry": true,
+          "values_from_api": {
+            "url": "https://dev.iqtoolboxquality.iq360.cloud/stanley/customer-data",
+            "type": "GET",
+            "response_key": "customerName"
+          }
+        },
+        {
+          "key": "customer_location",
+          "label": "Customer Address",
+          "uitype": "address",
+          "datatype": "string",
+          "mandatory": true,
+          "hint": "Enter Customer Address",
+          "max": 100
+        },
+        {
+          "key": "order_no",
+          "label": "Sales order # / Service order #",
+          "uitype": "textbox",
+          "datatype": "int",
+          "mandatory": true,
+          "hint": "Enter Order #",
+          "max": 10
+        },
+        {
+          "key": "event_line_number",
+          "label": "Line Item #",
+          "uitype": "textbox",
+          "datatype": "int",
+          "mandatory": false,
+          "hint": "Enter Line Item #",
+          "max": 12
+        },
+        {
+          "key": "door_id",
+          "label": "Door Type",
+          "uitype": "dropdown",
+          "datatype": "string",
+          "mandatory": true,
+          "hint": "Select Door Type",
+          "values_from_api": {
+            "url": "https://dev.iqtoolboxquality.iq360.cloud/stanley/doors",
+            "type": "GET",
+            "response_key": "door_name"
+          }
+        },
+        {
+          "key": "part_desc",
+          "label": "Part Description",
+          "uitype": "dropdown",
+          "datatype": "string",
+          "hint": "Select Part Description",
+          "mandatory": true,
+          "values_from_api": {
+            "url": "https://dev.iqtoolboxquality.iq360.cloud/stanley/door-parts",
+            "type": "POST",
+            "response_key": "description",
+            "request_key": [
+              {
+                "form_key": "door_id",
+                "key": "doorName"
+              }
+
+            ],
+            "values": [
+              {
+                "value": "OTHER",
+                "decision_node": {
+                  "conditions": {
+                    "default": {
+                      "subform": "rf2.3"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "key": "part_no",
+          "label": "Part #",
+          "uitype": "dropdown",
+          "datatype": "string",
+          "hint": "Select Part #",
+          "mandatory": true,
+          "values_from_api": {
+            "url": "https://dev.iqtoolboxquality.iq360.cloud/stanley/door-parts",
+            "type": "POST",
+            "response_key": "part_number",
+            "request_key": [
+              {
+                "form_key": "door_id",
+                "key": "doorName"
+              }
+            ],
+            "values": [
+              {
+                "value": "OTHER",
+                "decision_node": {
+                  "conditions": {
+                    "default": {
+                      "subform": "rf2.4"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "key": "quantity_type",
+          "label": "Quantity Type",
+          "uitype": "dropdown",
+          "datatype": "string",
+          "mandatory": true,
+          "values": [
+            {
+              "value": "Length",
+              "decision_node": {
+                "conditions": {
+                  "default": {
+                    "subform": "rf2.1"
+                  }
+                }
+              }
+            },
+            {
+              "value": "Piece Count",
+              "decision_node": {
+                "conditions": {
+                  "default": {
+                    "subform": "rf2.2"
+                  }
+                }
+              }
+            }
+          ]
+        },
+        {
+          "key": "door_desc",
+          "label": "Door Description",
+          "uitype": "textbox",
+          "datatype": "string",
+          "mandatory": true,
+          "hint": "Write Door Description",
+          "max": 10
+        },
+        {
+          "key": "serial_number",
+          "label": "Serial Number",
+          "uitype": "scanner",
+          "datatype": "string",
+          "mandatory": true
+        }
+      ],
+      "buttons": [
+        {
+          "key": "rf4button",
+          "label": "Next",
+          "uitype": "button",
+          "button_type": 1,
+          "decision_node": {
+            "source": [
+              "failure_category"
+            ],
+            "conditions": {
+              "default": {
+                "subform": "rf11.1"
+              },
+              "Quality Event": {
+                "subform": "rf11"
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "formKey": "rf5",
+      "formName": "Report Event",
+      "entityKey": "failure_entity",
+      "parentEntityKey": null,
+      "fields": [
+        {
+          "key": "issue_desc",
+          "label": "Issue Description",
+          "uitype": "textbox",
+          "datatype": "string",
+          "mandatory": true,
+          "hint": "Write Description",
+          "max": 200
+        },
+        {
+          "key": "branch",
+          "label": "Branch",
+          "uitype": "dropdown",
+          "datatype": "string",
+          "mandatory": true,
+          "hint": "Select Branch",
+          "values_from_api": {
+            "url": "https://dev.iqtoolboxquality.iq360.cloud/stanley/branchData",
+            "type": "GET",
+            "response_key": "branchName"
+          }
+        },
+        {
+          "key": "customer",
+          "label": "Customer",
+          "uitype": "dropdown",
+          "datatype": "string",
+          "mandatory": false,
+          "hint": "Select Customer",
+          "allow_custom_entry": true,
+          "values_from_api": {
+            "url": "https://dev.iqtoolboxquality.iq360.cloud/stanley/customer-data",
+            "type": "GET",
+            "response_key": "customerName"
+          }
+        },
+        {
+          "key": "customer_location",
+          "label": "Customer Address",
+          "uitype": "address",
+          "datatype": "string",
+          "mandatory": true,
+          "hint": "Enter Customer Address",
+          "max": 100
+        },
+        {
+          "key": "order_no",
+          "label": "Sales order # / Service order #",
+          "uitype": "textbox",
+          "datatype": "int",
+          "mandatory": true,
+          "hint": "Enter Order #",
+          "max": 10
+        },
+        {
+          "key": "event_line_number",
+          "label": "Line Item #",
+          "uitype": "textbox",
+          "datatype": "int",
+          "mandatory": false,
+          "hint": "Enter Line Item #",
+          "max": 12
+        },
+        {
+          "key": "door_id",
+          "label": "Door Type",
+          "uitype": "dropdown",
+          "datatype": "string",
+          "mandatory": true,
+          "hint": "Select Door Type",
+          "values_from_api": {
+            "url": "https://dev.iqtoolboxquality.iq360.cloud/stanley/doors",
+            "type": "GET",
+            "response_key": "door_name"
+          }
+        },
+        {
+          "key": "hardware_kit_serial_no",
+          "label": "Hardware Kit Serial #",
+          "uitype": "textbox",
+          "datatype": "string",
+          "mandatory": true,
+          "hint": "Enter Hardware Kit Serial #"
+        },
+        {
+          "key": "quantity_type",
+          "label": "Quantity Type",
+          "uitype": "dropdown",
+          "datatype": "string",
+          "mandatory": true,
+          "values": [
+            {
+              "value": "Length",
+              "decision_node": {
+                "conditions": {
+                  "default": {
+                    "subform": "rf2.1"
+                  }
+                }
+              }
+            },
+            {
+              "value": "Piece Count",
+              "decision_node": {
+                "conditions": {
+                  "default": {
+                    "subform": "rf2.2"
+                  }
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "buttons": [
+        {
+          "key": "rf5button",
+          "label": "Next",
+          "uitype": "button",
+          "button_type": 1,
+          "decision_node": {
+            "source": [
+              "failure_category"
+            ],
+            "conditions": {
+              "default": {
+                "subform": "rf11.1"
+              },
+              "Quality Event": {
+                "subform": "rf11"
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "formKey": "rf6",
+      "formName": "Report Event",
+      "entityKey": "failure_entity",
+      "parentEntityKey": null,
+      "fields": [
+        {
+          "key": "issue_desc",
+          "label": "Issue Description",
+          "uitype": "textbox",
+          "datatype": "string",
+          "mandatory": true,
+          "hint": "Write Description",
+          "max": 200
+        },
+        {
+          "key": "branch",
+          "label": "Branch",
+          "uitype": "dropdown",
+          "datatype": "string",
+          "mandatory": true,
+          "hint": "Select Branch",
+          "values_from_api": {
+            "url": "https://dev.iqtoolboxquality.iq360.cloud/stanley/branchData",
+            "type": "GET",
+            "response_key": "branchName"
+          }
+        },
+        {
+          "key": "customer",
+          "label": "Customer",
+          "uitype": "dropdown",
+          "datatype": "string",
+          "mandatory": false,
+          "hint": "Select Customer",
+          "allow_custom_entry": true,
+          "values_from_api": {
+            "url": "https://dev.iqtoolboxquality.iq360.cloud/stanley/customer-data",
+            "type": "GET",
+            "response_key": "customerName"
+          }
+        },
+        {
+          "key": "customer_location",
+          "label": "Customer Address",
+          "uitype": "address",
+          "datatype": "string",
+          "mandatory": true,
+          "hint": "Enter Customer Address",
+          "max": 100
+        },
+        {
+          "key": "order_no",
+          "label": "Sales order # / Service order #",
+          "uitype": "textbox",
+          "datatype": "int",
+          "mandatory": true,
+          "hint": "Enter Order #",
+          "max": 10
+        },
+        {
+          "key": "event_line_number",
+          "label": "Line Item #",
+          "uitype": "textbox",
+          "datatype": "int",
+          "mandatory": false,
+          "hint": "Enter Line Item #",
+          "max": 12
+        },
+        {
+          "key": "door_id",
+          "label": "Door Type",
+          "uitype": "dropdown",
+          "datatype": "string",
+          "mandatory": true,
+          "hint": "Select Door Type",
+          "values_from_api": {
+            "url": "https://dev.iqtoolboxquality.iq360.cloud/stanley/doors",
+            "type": "GET",
+            "response_key": "door_name"
+          }
+        },
+        {
+          "key": "hardware_kit_serial_no",
+          "label": "Hardware Kit Serial #",
+          "uitype": "textbox",
+          "datatype": "string",
+          "mandatory": true,
+          "hint": "Enter Hardware Kit Serial #"
+        },
+        {
+          "key": "quantity_type",
+          "label": "Quantity Type",
+          "uitype": "dropdown",
+          "datatype": "string",
+          "mandatory": true,
+          "values": [
+            {
+              "value": "Length",
+              "decision_node": {
+                "conditions": {
+                  "default": {
+                    "subform": "rf2.1"
+                  }
+                }
+              }
+            },
+            {
+              "value": "Piece Count",
+              "decision_node": {
+                "conditions": {
+                  "default": {
+                    "subform": "rf2.2"
+                  }
+                }
+              }
+            }
+          ]
+        },
+        {
+          "key": "sto_po_num",
+          "label": "STO/PO #",
+          "uitype": "textbox",
+          "datatype": "int",
+          "mandatory": true,
+          "hint": "Enter STO/PO #",
+          "max": 10
+        },
+        {
+          "key": "tracking_num",
+          "label": "Bill of Lading / Tracking Number",
+          "uitype": "textbox",
+          "datatype": "int",
+          "mandatory": true,
+          "hint": "Enter Bill or Tracking #",
+          "max": 30
+        },
+        {
+          "key": "shipping_date",
+          "label": "Shipping Date",
+          "uitype": "date",
+          "datatype": "string",
+          "mandatory": true
+        },
+        {
+          "key": "shipping_origin",
+          "label": "Shipping Origin",
+          "uitype": "dropdown",
+          "datatype": "string",
+          "mandatory": true,
+          "hint": "Select Origin",
+          "values": [
+            {
+              "value": "Farmington, CT"
+            },
+            {
+              "value": "Mt Comfort Indiana"
+            }
+          ]
+        }
+      ],
+      "buttons": [
+        {
+          "key": "rf6button",
+          "label": "Next",
+          "uitype": "button",
+          "button_type": 1,
+          "decision_node": {
+            "source": [
+              "failure_category"
+            ],
+            "conditions": {
+              "default": {
+                "subform": "rf11.1"
+              },
+              "Quality Event": {
+                "subform": "rf11"
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "formKey": "rf7",
+      "formName": "Report Event",
+      "entityKey": "failure_entity",
+      "parentEntityKey": null,
+      "fields": [
+        {
+          "key": "issue_desc",
+          "label": "Issue Description",
+          "uitype": "textbox",
+          "datatype": "string",
+          "mandatory": true,
+          "hint": "Write Description",
+          "max": 200
+        },
+        {
+          "key": "branch",
+          "label": "Branch",
+          "uitype": "dropdown",
+          "datatype": "string",
+          "mandatory": true,
+          "hint": "Select Branch",
+          "values_from_api": {
+            "url": "https://dev.iqtoolboxquality.iq360.cloud/stanley/branchData",
+            "type": "GET",
+            "response_key": "branchName"
+          }
+        },
+        {
+          "key": "customer",
+          "label": "Customer",
+          "uitype": "dropdown",
+          "datatype": "string",
+          "mandatory": false,
+          "hint": "Select Customer",
+          "allow_custom_entry": true,
+          "values_from_api": {
+            "url": "https://dev.iqtoolboxquality.iq360.cloud/stanley/customer-data",
+            "type": "GET",
+            "response_key": "customerName"
+          }
+        },
+        {
+          "key": "customer_location",
+          "label": "Customer Address",
+          "uitype": "address",
+          "datatype": "string",
+          "mandatory": true,
+          "hint": "Enter Customer Address",
+          "max": 100
+        },
+        {
+          "key": "order_no",
+          "label": "Sales order # / Service order #",
+          "uitype": "textbox",
+          "datatype": "int",
+          "mandatory": true,
+          "hint": "Enter Order #",
+          "max": 10
+        },
+        {
+          "key": "event_line_number",
+          "label": "Line Item #",
+          "uitype": "textbox",
+          "datatype": "int",
+          "mandatory": false,
+          "hint": "Enter Line Item #",
+          "max": 12
+        },
+        {
+          "key": "door_id",
+          "label": "Door Type",
+          "uitype": "dropdown",
+          "datatype": "string",
+          "mandatory": true,
+          "hint": "Select Door Type",
+          "values_from_api": {
+            "url": "https://dev.iqtoolboxquality.iq360.cloud/stanley/doors",
+            "type": "GET",
+            "response_key": "door_name"
+          }
+        },
+        {
+          "key": "hardware_kit_serial_no",
+          "label": "Hardware Kit Serial #",
+          "uitype": "textbox",
+          "datatype": "string",
+          "mandatory": true,
+          "hint": "Enter Hardware Kit Serial #"
+        },
+        {
+          "key": "quantity_type",
+          "label": "Quantity Type",
+          "uitype": "dropdown",
+          "datatype": "string",
+          "mandatory": true,
+          "values": [
+            {
+              "value": "Length",
+              "decision_node": {
+                "conditions": {
+                  "default": {
+                    "subform": "rf2.1"
+                  }
+                }
+              }
+            },
+            {
+              "value": "Piece Count",
+              "decision_node": {
+                "conditions": {
+                  "default": {
+                    "subform": "rf2.2"
+                  }
+                }
+              }
+            }
+          ]
+        },
+        {
+          "key": "door_desc",
+          "label": "Door Description",
+          "uitype": "textbox",
+          "datatype": "string",
+          "mandatory": true,
+          "hint": "Write Door Description",
+          "max": 10
+        },
+        {
+          "key": "serial_number",
+          "label": "Serial Number",
+          "uitype": "scanner",
+          "datatype": "string",
+          "mandatory": true
+        }
+      ],
+      "buttons": [
+        {
+          "key": "rf7button",
+          "label": "Next",
+          "uitype": "button",
+          "button_type": 1,
+          "decision_node": {
+            "source": [
+              "failure_category"
+            ],
+            "conditions": {
+              "default": {
+                "subform": "rf11.1"
+              },
+              "Quality Event": {
+                "subform": "rf11"
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "formKey": "rf8",
+      "formName": "Report Event",
+      "entityKey": "failure_entity",
+      "parentEntityKey": null,
+      "fields": [
+        {
+          "key": "issue_desc",
+          "label": "Issue Description",
+          "uitype": "textbox",
+          "datatype": "string",
+          "mandatory": true,
+          "hint": "Write Description",
+          "max": 200
+        },
+        {
+          "key": "branch",
+          "label": "Branch",
+          "uitype": "dropdown",
+          "datatype": "string",
+          "mandatory": true,
+          "hint": "Select Branch",
+          "values_from_api": {
+            "url": "https://dev.iqtoolboxquality.iq360.cloud/stanley/branchData",
+            "type": "GET",
+            "response_key": "branchName"
+          }
+        },
+        {
+          "key": "customer",
+          "label": "Customer",
+          "uitype": "dropdown",
+          "datatype": "string",
+          "mandatory": false,
+          "hint": "Select Customer",
+          "allow_custom_entry": true,
+          "values_from_api": {
+            "url": "https://dev.iqtoolboxquality.iq360.cloud/stanley/customer-data",
+            "type": "GET",
+            "response_key": "customerName"
+          }
+        },
+        {
+          "key": "customer_location",
+          "label": "Customer Address",
+          "uitype": "address",
+          "datatype": "string",
+          "mandatory": true,
+          "hint": "Enter Customer Address",
+          "max": 100
+        },
+        {
+          "key": "order_no",
+          "label": "Sales order # / Service order #",
+          "uitype": "textbox",
+          "datatype": "int",
+          "mandatory": true,
+          "hint": "Enter Order #",
+          "max": 10
+        },
+        {
+          "key": "event_line_number",
+          "label": "Line Item #",
+          "uitype": "textbox",
+          "datatype": "int",
+          "mandatory": false,
+          "hint": "Enter Line Item #",
+          "max": 12
+        },
+        {
+          "key": "door_id",
+          "label": "Door Type",
+          "uitype": "dropdown",
+          "datatype": "string",
+          "mandatory": true,
+          "hint": "Select Door Type",
+          "values_from_api": {
+            "url": "https://dev.iqtoolboxquality.iq360.cloud/stanley/doors",
+            "type": "GET",
+            "response_key": "door_name"
+          }
+        },
+        {
+          "key": "part_desc",
+          "label": "Part Description",
+          "uitype": "dropdown",
+          "datatype": "string",
+          "hint": "Select Part Description",
+          "mandatory": true,
+          "values_from_api": {
+            "url": "https://dev.iqtoolboxquality.iq360.cloud/stanley/hardware-kit-parts",
+            "type": "POST",
+            "response_key": "description",
+            "values": [
+              {
+                "value": "OTHER",
+                "decision_node": {
+                  "conditions": {
+                    "default": {
+                      "subform": "rf2.3"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "key": "part_no",
+          "label": "Part #",
+          "uitype": "dropdown",
+          "datatype": "string",
+          "hint": "Select Part #",
+          "mandatory": true,
+          "values_from_api": {
+            "url": "https://dev.iqtoolboxquality.iq360.cloud/stanley/hardware-kit-parts",
+            "type": "POST",
+            "response_key": "part_number",
+            "values": [
+              {
+                "value": "OTHER",
+                "decision_node": {
+                  "conditions": {
+                    "default": {
+                      "subform": "rf2.4"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "key": "quantity_type",
+          "label": "Quantity Type",
+          "uitype": "dropdown",
+          "datatype": "string",
+          "mandatory": true,
+          "values": [
+            {
+              "value": "Length",
+              "decision_node": {
+                "conditions": {
+                  "default": {
+                    "subform": "rf2.1"
+                  }
+                }
+              }
+            },
+            {
+              "value": "Piece Count",
+              "decision_node": {
+                "conditions": {
+                  "default": {
+                    "subform": "rf2.2"
+                  }
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "buttons": [
+        {
+          "key": "rf8button",
+          "label": "Next",
+          "uitype": "button",
+          "button_type": 1,
+          "decision_node": {
+            "source": [
+              "failure_category"
+            ],
+            "conditions": {
+              "default": {
+                "subform": "rf11.1"
+              },
+              "Quality Event": {
+                "subform": "rf11"
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "formKey": "rf9",
+      "formName": "Report Event",
+      "entityKey": "failure_entity",
+      "parentEntityKey": null,
+      "fields": [
+        {
+          "key": "issue_desc",
+          "label": "Issue Description",
+          "uitype": "textbox",
+          "datatype": "string",
+          "mandatory": true,
+          "hint": "Write Description",
+          "max": 200
+        },
+        {
+          "key": "branch",
+          "label": "Branch",
+          "uitype": "dropdown",
+          "datatype": "string",
+          "mandatory": true,
+          "hint": "Select Branch",
+          "values_from_api": {
+            "url": "https://dev.iqtoolboxquality.iq360.cloud/stanley/branchData",
+            "type": "GET",
+            "response_key": "branchName"
+          }
+        },
+        {
+          "key": "customer",
+          "label": "Customer",
+          "uitype": "dropdown",
+          "datatype": "string",
+          "mandatory": false,
+          "hint": "Select Customer",
+          "allow_custom_entry": true,
+          "values_from_api": {
+            "url": "https://dev.iqtoolboxquality.iq360.cloud/stanley/customer-data",
+            "type": "GET",
+            "response_key": "customerName"
+          }
+        },
+        {
+          "key": "customer_location",
+          "label": "Customer Address",
+          "uitype": "address",
+          "datatype": "string",
+          "mandatory": true,
+          "hint": "Enter Customer Address",
+          "max": 100
+        },
+        {
+          "key": "order_no",
+          "label": "Sales order # / Service order #",
+          "uitype": "textbox",
+          "datatype": "int",
+          "mandatory": true,
+          "hint": "Enter Order #",
+          "max": 10
+        },
+        {
+          "key": "event_line_number",
+          "label": "Line Item #",
+          "uitype": "textbox",
+          "datatype": "int",
+          "mandatory": false,
+          "hint": "Enter Line Item #",
+          "max": 12
+        },
+        {
+          "key": "door_id",
+          "label": "Door Type",
+          "uitype": "dropdown",
+          "datatype": "string",
+          "mandatory": true,
+          "hint": "Select Door Type",
+          "values_from_api": {
+            "url": "https://dev.iqtoolboxquality.iq360.cloud/stanley/doors",
+            "type": "GET",
+            "response_key": "door_name"
+          }
+        },
+        {
+          "key": "part_desc",
+          "label": "Part Description",
+          "uitype": "dropdown",
+          "datatype": "string",
+          "hint": "Select Part Description",
+          "mandatory": true,
+          "values_from_api": {
+            "url": "https://dev.iqtoolboxquality.iq360.cloud/stanley/hardware-kit-parts",
+            "type": "POST",
+            "response_key": "description",
+            "values": [
+              {
+                "value": "OTHER",
+                "decision_node": {
+                  "conditions": {
+                    "default": {
+                      "subform": "rf2.3"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "key": "part_no",
+          "label": "Part #",
+          "uitype": "dropdown",
+          "datatype": "string",
+          "hint": "Select Part #",
+          "mandatory": true,
+          "values_from_api": {
+            "url": "https://dev.iqtoolboxquality.iq360.cloud/stanley/hardware-kit-parts",
+            "type": "POST",
+            "response_key": "part_number",
+            "values": [
+              {
+                "value": "OTHER",
+                "decision_node": {
+                  "conditions": {
+                    "default": {
+                      "subform": "rf2.4"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "key": "quantity_type",
+          "label": "Quantity Type",
+          "uitype": "dropdown",
+          "datatype": "string",
+          "mandatory": true,
+          "values": [
+            {
+              "value": "Length",
+              "decision_node": {
+                "conditions": {
+                  "default": {
+                    "subform": "rf2.1"
+                  }
+                }
+              }
+            },
+            {
+              "value": "Piece Count",
+              "decision_node": {
+                "conditions": {
+                  "default": {
+                    "subform": "rf2.2"
+                  }
+                }
+              }
+            }
+          ]
+        },
+        {
+          "key": "sto_po_num",
+          "label": "STO/PO #",
+          "uitype": "textbox",
+          "datatype": "int",
+          "mandatory": true,
+          "hint": "Enter STO/PO #",
+          "max": 10
+        },
+        {
+          "key": "tracking_num",
+          "label": "Bill of Lading / Tracking Number",
+          "uitype": "textbox",
+          "datatype": "int",
+          "mandatory": true,
+          "hint": "Enter Bill or Tracking #",
+          "max": 30
+        },
+        {
+          "key": "shipping_date",
+          "label": "Shipping Date",
+          "uitype": "date",
+          "datatype": "string",
+          "mandatory": true
+        },
+        {
+          "key": "shipping_origin",
+          "label": "Shipping Origin",
+          "uitype": "dropdown",
+          "datatype": "string",
+          "mandatory": true,
+          "hint": "Select Origin",
+          "values": [
+            {
+              "value": "Farmington, CT"
+            },
+            {
+              "value": "Mt Comfort Indiana"
+            }
+          ]
+        }
+      ],
+      "buttons": [
+        {
+          "key": "rf9button",
+          "label": "Next",
+          "uitype": "button",
+          "button_type": 1,
+          "decision_node": {
+            "source": [
+              "failure_category"
+            ],
+            "conditions": {
+              "default": {
+                "subform": "rf11.1"
+              },
+              "Quality Event": {
+                "subform": "rf11"
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "formKey": "rf10",
+      "formName": "Report Event",
+      "entityKey": "failure_entity",
+      "parentEntityKey": null,
+      "fields": [
+        {
+          "key": "issue_desc",
+          "label": "Issue Description",
+          "uitype": "textbox",
+          "datatype": "string",
+          "mandatory": true,
+          "hint": "Write Description",
+          "max": 200
+        },
+        {
+          "key": "branch",
+          "label": "Branch",
+          "uitype": "dropdown",
+          "datatype": "string",
+          "mandatory": true,
+          "hint": "Select Branch",
+          "values_from_api": {
+            "url": "https://dev.iqtoolboxquality.iq360.cloud/stanley/branchData",
+            "type": "GET",
+            "response_key": "branchName"
+          }
+        },
+        {
+          "key": "customer",
+          "label": "Customer",
+          "uitype": "dropdown",
+          "datatype": "string",
+          "mandatory": false,
+          "hint": "Select Customer",
+          "allow_custom_entry": true,
+          "values_from_api": {
+            "url": "https://dev.iqtoolboxquality.iq360.cloud/stanley/customer-data",
+            "type": "GET",
+            "response_key": "customerName"
+          }
+        },
+        {
+          "key": "customer_location",
+          "label": "Customer Address",
+          "uitype": "address",
+          "datatype": "string",
+          "mandatory": true,
+          "hint": "Enter Customer Address",
+          "max": 100
+        },
+        {
+          "key": "order_no",
+          "label": "Sales order # / Service order #",
+          "uitype": "textbox",
+          "datatype": "int",
+          "mandatory": true,
+          "hint": "Enter Order #",
+          "max": 10
+        },
+        {
+          "key": "event_line_number",
+          "label": "Line Item #",
+          "uitype": "textbox",
+          "datatype": "int",
+          "mandatory": false,
+          "hint": "Enter Line Item #",
+          "max": 12
+        },
+        {
+          "key": "door_id",
+          "label": "Door Type",
+          "uitype": "dropdown",
+          "datatype": "string",
+          "mandatory": true,
+          "hint": "Select Door Type",
+          "values_from_api": {
+            "url": "https://dev.iqtoolboxquality.iq360.cloud/stanley/doors",
+            "type": "GET",
+            "response_key": "door_name"
+          }
+        },
+        {
+          "key": "part_desc",
+          "label": "Part Description",
+          "uitype": "dropdown",
+          "datatype": "string",
+          "hint": "Select Part Description",
+          "mandatory": true,
+          "values_from_api": {
+            "url": "https://dev.iqtoolboxquality.iq360.cloud/stanley/hardware-kit-parts",
+            "type": "POST",
+            "response_key": "description",
+            "values": [
+              {
+                "value": "OTHER",
+                "decision_node": {
+                  "conditions": {
+                    "default": {
+                      "subform": "rf2.3"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "key": "part_no",
+          "label": "Part #",
+          "uitype": "dropdown",
+          "datatype": "string",
+          "hint": "Select Part #",
+          "mandatory": true,
+          "values_from_api": {
+            "url": "https://dev.iqtoolboxquality.iq360.cloud/stanley/hardware-kit-parts",
+            "type": "POST",
+            "response_key": "part_number",
+            "values": [
+              {
+                "value": "OTHER",
+                "decision_node": {
+                  "conditions": {
+                    "default": {
+                      "subform": "rf2.4"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "key": "quantity_type",
+          "label": "Quantity Type",
+          "uitype": "dropdown",
+          "datatype": "string",
+          "mandatory": true,
+          "values": [
+            {
+              "value": "Length",
+              "decision_node": {
+                "conditions": {
+                  "default": {
+                    "subform": "rf2.1"
+                  }
+                }
+              }
+            },
+            {
+              "value": "Piece Count",
+              "decision_node": {
+                "conditions": {
+                  "default": {
+                    "subform": "rf2.2"
+                  }
+                }
+              }
+            }
+          ]
+        },
+        {
+          "key": "door_desc",
+          "label": "Door Description",
+          "uitype": "textbox",
+          "datatype": "string",
+          "mandatory": true,
+          "hint": "Write Door Description",
+          "max": 10
+        },
+        {
+          "key": "serial_number",
+          "label": "Serial Number",
+          "uitype": "scanner",
+          "datatype": "string",
+          "mandatory": true
+        }
+      ],
+      "buttons": [
+        {
+          "key": "rf10button",
+          "label": "Next",
+          "uitype": "button",
+          "button_type": 1,
+          "decision_node": {
+            "source": [
+              "failure_category"
+            ],
+            "conditions": {
+              "default": {
+                "subform": "rf11.1"
+              },
+              "Quality Event": {
+                "subform": "rf11"
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "formKey": "rf11",
+      "formName": "Report Event",
+      "entityKey": "failure_entity",
+      "parentEntityKey": null,
+      "fields": [
+        {
+          "key": "comment",
+          "label": "Comments",
+          "uitype": "textbox",
+          "datatype": "string",
+          "hint": "Write Comments",
+          "max": 300
+        },
+        {
+          "key": "failure_pictures",
+          "label": "Capture Photograph",
+          "uitype": "image",
+          "datatype": "listString",
+          "mandatory": true,
+          "validation": "$failure_pictures.length <= 1",
+          "max": 10
+        },
+        {
+          "key": "order_part_button",
+          "label": "Order Parts",
+          "uitype": "button",
+          "button_type": 1,
+          "decision_node": {
+            "source": [
+              "product_type_info"
+            ],
+            "conditions": {
+              "default": {
+                "subform": "rf12"
+              },
+              "Entire Hardware Kit": {
+                "subform": "rf12.2"
+              },
+              "Components within Hardware Kit": {
+                "subform": "rf12.3"
+              }
+            }
+          }
+        }
+      ],
+      "buttons": [
+        {
+          "key": "rf11button",
+          "label": "Preview",
+          "uitype": "button",
+          "button_type": 1,
+          "decision_node": {
+            "conditions": {
+              "default": {
+                "subform": "rf13"
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "formKey": "rf11.1",
+      "formName": "Report Event",
+      "entityKey": "failure_entity",
+      "parentEntityKey": null,
+      "fields": [
+        {
+          "key": "comment",
+          "label": "Comments",
+          "uitype": "textbox",
+          "datatype": "string",
+          "hint": "Write Comments",
+          "max": 300
+        },
+        {
+          "key": "failure_pictures",
+          "label": "Capture Photograph",
+          "uitype": "image",
+          "datatype": "listString",
+          "mandatory": true,
+          "validation": "$failure_pictures.length <= 1",
+          "max": 10
+        }
+      ],
+      "buttons": [
+        {
+          "key": "rf11.1button",
+          "label": "Preview",
+          "uitype": "button",
+          "button_type": 1,
+          "decision_node": {
+            "conditions": {
+              "default": {
+                "subform": "rf13"
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "formKey": "rf12",
+      "formName": "",
+      "entityKey": "order_entity",
+      "parentEntityKey": "failure_entity",
+      "fields": [
+        {
+          "key": "order_parts",
+          "label": "Order Parts",
+          "uitype": "add_item",
+          "datatype": "listObject",
+          "mandatory": true,
+          "subform": "rf12.4"
+        },
+        {
+          "key": "ship_to",
+          "label": "Shipment Details",
+          "uitype": "radio",
+          "datatype": "string",
+          "mandatory": true,
+          "values": [
+            {
+              "value": "Ship to Branch"
+            },
+            {
+              "value": "Ship to Other",
+              "decision_node": {
+                "conditions": {
+                  "default": {
+                    "subform": "rf12.1"
+                  }
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "buttons": [
+        {
+          "key": "rf12button",
+          "label": "Preview",
+          "uitype": "button",
+          "button_type": 1,
+          "decision_node": {
+            "conditions": {
+              "default": {
+                "subform": "rf13"
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "formKey": "rf12.1",
+      "formName": "Report Event",
+      "entityKey": "order_entity",
+      "parentEntityKey": "failure_entity",
+      "fields": [
+        {
+          "key": "address",
+          "label": "Address",
+          "uitype": "textbox",
+          "datatype": "string",
+          "mandatory": true
+        }
+      ],
+      "buttons": []
+    },
+    {
+      "formKey": "rf12.2",
+      "formName": "",
+      "entityKey": "order_entity",
+      "parentEntityKey": "failure_entity",
+      "fields": [
+        {
+          "key": "order_parts",
+          "label": "Order Parts",
+          "uitype": "add_item",
+          "datatype": "listObject",
+          "mandatory": true,
+          "subform": "rf12.5"
+        },
+        {
+          "key": "ship_to",
+          "label": "Shipment Details",
+          "uitype": "radio",
+          "datatype": "string",
+          "mandatory": true,
+          "values": [
+            {
+              "value": "Ship to Branch"
+            },
+            {
+              "value": "Ship to Other",
+              "decision_node": {
+                "conditions": {
+                  "default": {
+                    "subform": "rf12.1"
+                  }
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "buttons": [
+        {
+          "key": "rf12button",
+          "label": "Preview",
+          "uitype": "button",
+          "button_type": 1,
+          "decision_node": {
+            "conditions": {
+              "default": {
+                "subform": "rf13"
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "formKey": "rf12.3",
+      "formName": "",
+      "entityKey": "order_entity",
+      "parentEntityKey": "failure_entity",
+      "fields": [
+        {
+          "key": "order_parts",
+          "label": "Order Parts",
+          "uitype": "add_item",
+          "datatype": "listObject",
+          "mandatory": true,
+          "subform": "rf12.6"
+        },
+        {
+          "key": "ship_to",
+          "label": "Shipment Details",
+          "uitype": "radio",
+          "datatype": "string",
+          "mandatory": true,
+          "values": [
+            {
+              "value": "Ship to Branch"
+            },
+            {
+              "value": "Ship to Other",
+              "decision_node": {
+                "conditions": {
+                  "default": {
+                    "subform": "rf12.1"
+                  }
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "buttons": [
+        {
+          "key": "rf12button",
+          "label": "Preview",
+          "uitype": "button",
+          "button_type": 1,
+          "decision_node": {
+            "conditions": {
+              "default": {
+                "subform": "rf13"
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "formKey": "rf12.4",
+      "formName": "Report Event",
+      "entityKey": "order_entity",
+      "parentEntityKey": "failure_entity",
+      "fields": [
+        {
+          "key": "order_line_number",
+          "label": "Line Item #",
+          "uitype": "textbox",
+          "datatype": "int",
+          "mandatory": false,
+          "hint": "Enter Line Item #",
+          "max": 12
+        },
+        {
+          "key": "order_door_id",
+          "label": "Door Type",
+          "uitype": "dropdown",
+          "datatype": "string",
+          "mandatory": true,
+          "hint": "Select Door Type",
+          "values_from_api": {
+            "url": "https://dev.iqtoolboxquality.iq360.cloud/stanley/doors",
+            "type": "GET",
+            "response_key": "door_name"
+          }
+        },
+        {
+          "key": "order_part_desc",
+          "label": "Part Description",
+          "uitype": "dropdown",
+          "datatype": "string",
+          "hint": "Select Part Description",
+          "values_from_api": {
+            "url": "https://dev.iqtoolboxquality.iq360.cloud/stanley/door-parts",
+            "type": "POST",
+            "response_key": "description",
+            "request_key": [
+              {
+                "form_key": "door_id",
+                "key": "doorName"
+              }
+            ],
+            "values": [
+              {
+                "value": "OTHER",
+                "decision_node": {
+                  "conditions": {
+                    "default": {
+                      "subform": "rf12.7"
+                    }
+                  }
+                }
+              }
+            ]
+          },
+          "mandatory": true
+        },
+        {
+          "key": "order_part_number",
+          "label": "Part #",
+          "uitype": "dropdown",
+          "datatype": "string",
+          "hint": "Select Part #",
+          "values_from_api": {
+            "url": "https://dev.iqtoolboxquality.iq360.cloud/stanley/door-parts",
+            "type": "POST",
+            "response_key": "part_number",
+            "request_key": [
+              {
+                "form_key": "door_id",
+                "key": "doorName"
+              }
+            ],
+            "values": [
+              {
+                "value": "OTHER",
+                "decision_node": {
+                  "conditions": {
+                    "default": {
+                      "subform": "rf12.8"
+                    }
+                  }
+                }
+              }
+            ]
+          },
+          "mandatory": true
+        },
+        {
+          "key": "order_quantity_type",
+          "label": "Quantity Type",
+          "uitype": "dropdown",
+          "datatype": "string",
+          "mandatory": true,
+          "values": [
+            {
+              "value": "Length",
+              "decision_node": {
+                "conditions": {
+                  "default": {
+                    "subform": "rf12.9"
+                  }
+                }
+              }
+            },
+            {
+              "value": "Piece Count",
+              "decision_node": {
+                "conditions": {
+                  "default": {
+                    "subform": "rf12.10"
+                  }
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "buttons": []
+    },
+    {
+      "formKey": "rf12.5",
+      "formName": "Report Event",
+      "entityKey": "order_entity",
+      "parentEntityKey": "failure_entity",
+      "fields": [
+        {
+          "key": "order_line_number",
+          "label": "Line Item #",
+          "uitype": "textbox",
+          "datatype": "int",
+          "mandatory": false,
+          "hint": "Enter Line Item #",
+          "max": 12
+        },
+        {
+          "key": "order_door_id",
+          "label": "Door Type",
+          "uitype": "dropdown",
+          "datatype": "string",
+          "mandatory": true,
+          "hint": "Select Door Type",
+          "values_from_api": {
+            "url": "https://dev.iqtoolboxquality.iq360.cloud/stanley/doors",
+            "type": "GET",
+            "response_key": "door_name"
+          }
+        },
+        {
+          "key": "order_hardware_kit_serial_no",
+          "label": "Hardware Kit Serial #",
+          "uitype": "textbox",
+          "datatype": "string",
+          "mandatory": true,
+          "hint": "Enter Hardware Kit Serial #"
+        },
+        {
+          "key": "order_quantity_type",
+          "label": "Quantity Type",
+          "uitype": "dropdown",
+          "datatype": "string",
+          "mandatory": true,
+          "values": [
+            {
+              "value": "Length",
+              "decision_node": {
+                "conditions": {
+                  "default": {
+                    "subform": "rf12.9"
+                  }
+                }
+              }
+            },
+            {
+              "value": "Piece Count",
+              "decision_node": {
+                "conditions": {
+                  "default": {
+                    "subform": "rf12.10"
+                  }
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "buttons": []
+    },
+    {
+      "formKey": "rf12.6",
+      "formName": "Report Event",
+      "entityKey": "order_entity",
+      "parentEntityKey": "failure_entity",
+      "fields": [
+        {
+          "key": "order_line_number",
+          "label": "Line Item #",
+          "uitype": "textbox",
+          "datatype": "int",
+          "mandatory": false,
+          "hint": "Enter Line Item #",
+          "max": 12
+        },
+        {
+          "key": "order_door_id",
+          "label": "Door Type",
+          "uitype": "dropdown",
+          "datatype": "string",
+          "mandatory": true,
+          "hint": "Select Door Type",
+          "values_from_api": {
+            "url": "https://dev.iqtoolboxquality.iq360.cloud/stanley/doors",
+            "type": "GET",
+            "response_key": "door_name"
+          }
+        },
+        {
+          "key": "order_part_desc",
+          "label": "Part Description",
+          "uitype": "dropdown",
+          "datatype": "string",
+          "hint": "Select Part Description",
+          "values_from_api": {
+            "url": "https://dev.iqtoolboxquality.iq360.cloud/stanley/hardware-kit-parts",
+            "type": "POST",
+            "response_key": "description",
+            "values": [
+              {
+                "value": "OTHER",
+                "decision_node": {
+                  "conditions": {
+                    "default": {
+                      "subform": "rf12.7"
+                    }
+                  }
+                }
+              }
+            ]
+          },
+          "mandatory": true
+        },
+        {
+          "key": "order_part_number",
+          "label": "Part #",
+          "uitype": "dropdown",
+          "datatype": "string",
+          "hint": "Select Part #",
+          "values_from_api": {
+            "url": "https://dev.iqtoolboxquality.iq360.cloud/stanley/hardware-kit-parts",
+            "type": "POST",
+            "response_key": "part_number",
+            "values": [
+              {
+                "value": "OTHER",
+                "decision_node": {
+                  "conditions": {
+                    "default": {
+                      "subform": "rf12.8"
+                    }
+                  }
+                }
+              }
+            ]
+          },
+          "mandatory": true
+        },
+        {
+          "key": "order_quantity_type",
+          "label": "Quantity Type",
+          "uitype": "dropdown",
+          "datatype": "string",
+          "mandatory": true,
+          "values": [
+            {
+              "value": "Length",
+              "decision_node": {
+                "conditions": {
+                  "default": {
+                    "subform": "rf12.9"
+                  }
+                }
+              }
+            },
+            {
+              "value": "Piece Count",
+              "decision_node": {
+                "conditions": {
+                  "default": {
+                    "subform": "rf12.10"
+                  }
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "buttons": []
+    },
+    {
+      "formKey": "rf12.7",
+      "formName": "Report Event",
+      "entityKey": "order_entity",
+      "parentEntityKey": "failure_entity",
+      "fields": [
+        {
+          "key": "order_other_part_desc",
+          "label": "Part Description",
+          "uitype": "textbox",
+          "datatype": "string",
+          "mandatory": true,
+          "hint": "Enter Part Description"
+        }
+      ],
+      "buttons": []
+    },
+    {
+      "formKey": "rf12.8",
+      "formName": "Report Event",
+      "entityKey": "order_entity",
+      "parentEntityKey": "failure_entity",
+      "fields": [
+        {
+          "key": "order_other_part_no",
+          "label": "Part #",
+          "uitype": "textbox",
+          "datatype": "string",
+          "mandatory": true,
+          "hint": "Enter Part #"
+        }
+      ],
+      "buttons": []
+    },
+    {
+      "formKey": "rf12.9",
+      "formName": "Report Event",
+      "entityKey": "order_entity",
+      "parentEntityKey": "failure_entity",
+      "fields": [
+        {
+          "key": "order_quantity_top_header",
+          "label": "Length(Inches)",
+          "uitype": "numeric_textbox",
+          "datatype": "double",
+          "mandatory": true,
+          "hint": "Enter Length",
+          "default": "0",
+          "numericFieldChange": "0.25"
+        }
+      ],
+      "buttons": []
+    },
+    {
+      "formKey": "rf12.10",
+      "formName": "Report Event",
+      "entityKey": "order_entity",
+      "parentEntityKey": "failure_entity",
+      "fields": [
+        {
+          "key": "order_quantity",
+          "label": "Quantity",
+          "uitype": "numeric_textbox",
+          "datatype": "int",
+          "mandatory": true,
+          "hint": "Enter Quantity",
+          "default": "0",
+          "numericFieldChange": "1.0"
+        }
+      ],
+      "buttons": []
+    },
+    {
+      "formKey": "rf13",
+      "formName": "Report Event - Preview",
+      "entityKey": "failure_entity",
+      "parentEntityKey": null,
+      "formType": "PREVIEW",
+      "buttons": [
+        {
+          "key": "rf13button",
+          "label": "Submit",
+          "uitype": "button",
+          "button_type": 2,
+          "pre_submission_fields": [
+            {
+              "entity": "failure_entity",
+              "key": "status",
+              "value": "Reported"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

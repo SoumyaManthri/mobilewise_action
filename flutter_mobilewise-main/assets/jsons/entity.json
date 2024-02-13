@@ -1,0 +1,247 @@
+{
+  "entities": [
+    {
+      "name": "failure_entity",
+      "version": "1",
+      "attributes": [
+        {
+          "key": "failure_category",
+          "dt": "string",
+          "validations": {
+            "isMandatory": true
+          }
+        },
+        {
+          "key": "event_type",
+          "dt": "string",
+          "validations": {
+            "isMandatory": true
+          }
+        },
+        {
+          "key": "product_type",
+          "dt": "string",
+          "validations": {
+            "isMandatory": true
+          }
+        },
+        {
+          "key": "issue_desc",
+          "dt": "string",
+          "validations": {
+            "isMandatory": true
+          }
+        },
+        {
+          "key": "branch",
+          "dt": "string",
+          "validations": {
+            "isMandatory": true
+          }
+        },
+        {
+          "key": "customer",
+          "dt": "string",
+          "validations": {
+            "isMandatory": true
+          }
+        },
+        {
+          "key": "customer_location",
+          "dt": "string",
+          "validations": {
+            "isMandatory": true
+          }
+        },
+        {
+          "key": "order_no",
+          "dt": "string",
+          "validations": {
+            "isMandatory": true
+          }
+        },
+        {
+          "key": "part_no",
+          "dt": "string"
+        },
+        {
+          "key": "part_desc",
+          "dt": "string",
+          "validations": {
+            "isMandatory": true
+          }
+        },
+        {
+          "key": "quantity",
+          "dt": "string",
+          "validations": {
+            "isMandatory": true
+          }
+        },
+        {
+          "key": "sto_po_num",
+          "dt": "string",
+          "validations": {
+            "isMandatory": true
+          }
+        },
+        {
+          "key": "tracking_num",
+          "dt": "string",
+          "validations": {
+            "isMandatory": true
+          }
+        },
+        {
+          "key": "shipping_date",
+          "dt": "string",
+          "validations": {
+            "isMandatory": true
+          }
+        },
+        {
+          "key": "shipping_origin",
+          "dt": "string",
+          "validations": {
+            "isMandatory": true
+          }
+        },
+        {
+          "key": "comment",
+          "dt": "string",
+          "validations": {
+            "isMandatory": true
+          }
+        },
+        {
+          "key": "failure_pictures",
+          "dt": "listString",
+          "validations": {
+            "isMandatory": true,
+            "spel": [
+              "$failure_pictures.length <= 10"
+            ]
+          }
+        },
+        {
+          "key": "customer_location",
+          "dt": "string",
+          "validations": {
+            "isMandatory": true
+          }
+        },
+        {
+          "key": "door_id",
+          "dt": "string",
+          "validations": {
+            "isMandatory": true
+          }
+        },
+        {
+          "key": "door_desc",
+          "dt": "string",
+          "validations": {
+            "isMandatory": true
+          }
+        },
+        {
+          "key": "device_id",
+          "dt": "string",
+          "validations": {
+            "isMandatory": true
+          }
+        },
+        {
+          "key": "device_desc",
+          "dt": "string",
+          "validations": {
+            "isMandatory": true
+          }
+        },
+        {
+          "key": "device_part_num",
+          "dt": "string",
+          "validations": {
+            "isMandatory": true
+          }
+        },
+        {
+          "key": "device_rev",
+          "dt": "string",
+          "validations": {
+            "isMandatory": true
+          }
+        },
+        {
+          "key": "device_version",
+          "dt": "string",
+          "validations": {
+            "isMandatory": true
+          }
+        }
+      ]
+    },
+    {
+      "name": "order_entity",
+      "version": "1",
+      "attributes": [
+        {
+          "key": "order_parts.0.part_name",
+          "dt": "string",
+          "validations": {
+            "isMandatory": true
+          }
+        },
+        {
+          "key": "order_parts.0.part_desc",
+          "dt": "string",
+          "validations": {
+            "isMandatory": true
+          }
+        },
+        {
+          "key": "order_parts.0.part_quantity",
+          "dt": "int",
+          "validations": {
+            "isMandatory": true
+          }
+        },
+        {
+          "key": "order_parts.1.part_name",
+          "dt": "string",
+          "validations": {
+            "isMandatory": true
+          }
+        },
+        {
+          "key": "order_parts.1.part_desc",
+          "dt": "string",
+          "validations": {
+            "isMandatory": true
+          }
+        },
+        {
+          "key": "order_parts.1.part_quantity",
+          "dt": "int",
+          "validations": {
+            "isMandatory": true
+          }
+        },
+        {
+          "key": "ship_to",
+          "dt": "string",
+          "validations": {
+            "isMandatory": true
+          }
+        },
+        {
+          "key": "address",
+          "dt": "string",
+          "validations": {
+            "isMandatory": true
+          }
+        }
+      ]
+    }
+  ]
+}
