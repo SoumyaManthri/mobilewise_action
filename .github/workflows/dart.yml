@@ -41,6 +41,12 @@ jobs:
       - name: Restore packages
         run: flutter pub get
 
+      - name: Update CocoaPods (Optional)
+        run: sudo gem update cocoapods --pre  # Use without --pre for stable
+
+      - name: Update Dependencies
+        run: pod update 
+
       - name: Clean Xcode Project
         run: xcodebuild clean -workspace ios/Runner.xcworkspace -scheme Runner -configuration Release
 
@@ -51,7 +57,7 @@ jobs:
         run: pwd
 
       - name: List contents of the directory
-        run: ls 
+        run: ls 
 
       - name: Build and export .ipa (Distribution)
         run: |
@@ -67,8 +73,8 @@ jobs:
           name: ios-build-distribution
           path: build-output/ios
 
-      - name: Create placeholder files (TEMP PATCH) 
-        if: ${{ failure() }} 
+      - name: Create placeholder files (TEMP PATCH) 
+        if: ${{ failure() }} 
         run: |
           touch ios/Pods/Target\ Support\ Files/Pods-Runner/Pods-Runner-frameworks-Release-input-files.xcfilelist
-          touch ios/Pods/Target\ Support\ Files/Pods-Runner/Pods-Runner-frameworks-Release-output-files.xcfilelist 
+          touch ios/Pods/Target\ Support\ Files/Pods-Runner/Pods-Runner-frameworks-Release-output-files.xcfilelist 
