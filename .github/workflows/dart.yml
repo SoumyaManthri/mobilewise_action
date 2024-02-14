@@ -24,7 +24,7 @@ jobs:
           p12-file-base64: ${{ secrets.P12_BASE64 }}
           p12-password: ${{ secrets.P12_PASSWORD }}
 
-      - name: Install the provisioning profile (Distribution)
+      - name: Install Provisioning Profile (Distribution)
         env:
           PROVISIONING_CERTIFICATE_BASE64: ${{ secrets.IOS_PROVISION1 }}
         run: |
@@ -33,48 +33,49 @@ jobs:
           mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
           cp $PP_PATH ~/Library/MobileDevice/Provisioning\ Profiles
 
-      - name: Install and set Flutter version
+      - name: Install and Set Flutter Version
         uses: subosito/flutter-action@v2
         with:
           flutter-version: 3.16
 
-      - name: Restore packages
+      - name: Install CocoaPods
+        run: sudo gem install cocoapods
+
+      - name: Restore Flutter Packages
         run: flutter pub get
 
       - name: Update CocoaPods (Optional)
-        run: sudo gem update cocoapods --pre  # Use without --pre for stable
+        run: sudo gem update cocoapods --pre # Use without --pre for stable
+
+      - name: Reinstall CocoaPods
+        run: |
+          cd ios
+          pod deintegrate
+          pod install
+          cd ..
 
       - name: Update Dependencies
-        run: pod update 
+        run: pod update
 
       - name: Clean Xcode Project
         run: xcodebuild clean -workspace ios/Runner.xcworkspace -scheme Runner -configuration Release
 
-      - name: Build resolve Swift dependencies
+      - name: Build and Resolve Swift Dependencies
         run: xcodebuild -resolvePackageDependencies -workspace ios/Runner.xcworkspace -scheme Runner -configuration Release
 
-      - name: Print current working directory
+      - name: Print Current Working Directory
         run: pwd
 
-      - name: List contents of the directory
-        run: ls 
+      - name: List Contents of the Directory
+        run: ls
 
-      - name: Build and export .ipa (Distribution)
+      - name: Build and Export .ipa (Distribution)
         run: |
           xcodebuild -workspace ios/Runner.xcworkspace -scheme Runner -configuration Release -sdk iphoneos -destination 'generic/platform=iOS' -archivePath build-output/app.xcarchive PROVISIONING_PROFILE_SPECIFIER="Mobilewisedistribution" clean archive CODE_SIGN_IDENTITY="Apple Distribution: Laxmiprasad Putta"
           xcodebuild -exportArchive -archivePath build-output/app.xcarchive -exportPath build-output/ios -exportOptionsPlist ios/ExportOptions.plist
 
-      - name: Run Flutter in Release Mode
-        run: flutter build ipa --release
-
-      - name: Upload build artifacts (Distribution)
+      - name: Upload Build Artifacts (Distribution)
         uses: actions/upload-artifact@v2
         with:
           name: ios-build-distribution
-          path: build-output/ios
-
-      - name: Create placeholder files (TEMP PATCH) 
-        if: ${{ failure() }} 
-        run: |
-          touch ios/Pods/Target\ Support\ Files/Pods-Runner/Pods-Runner-frameworks-Release-input-files.xcfilelist
-          touch ios/Pods/Target\ Support\ Files/Pods-Runner/Pods-Runner-frameworks-Release-output-files.xcfilelist 
+          path: build-output/ios 
