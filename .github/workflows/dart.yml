@@ -55,7 +55,11 @@ jobs:
           cd ..
 
       - name: Update Dependencies
-        run: pod update
+        run: |
+          cd ios
+          flutter pub get
+          pod update
+          cd ..
 
       - name: Clean Xcode Project
         run: xcodebuild clean -workspace ios/Runner.xcworkspace -scheme Runner -configuration Release
