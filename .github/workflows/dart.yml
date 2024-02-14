@@ -39,8 +39,9 @@ jobs:
           flutter-version: 3.16
 
       - name: Install CocoaPods
-        run: sudo gem install cocoapods
-     
+        run: |
+          sudo gem update cocoapods --pre
+          pod update
 
       - name: Clean Xcode Project
         run: xcodebuild clean -workspace ios/Runner.xcworkspace -scheme Runner -configuration Release
@@ -64,16 +65,3 @@ jobs:
         with:
           name: ios-build-distribution
           path: build-output/ios
-
-      # Additional steps
-      - name: Run Tests
-        run: |
-          # Add your test running commands here
-
-      - name: Deploy to App Store
-        run: |
-          # Add your deployment commands here
-
-      - name: Notify Team
-        run: |
-          # Add your notification commands here
