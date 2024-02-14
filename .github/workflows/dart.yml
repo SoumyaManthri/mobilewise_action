@@ -40,20 +40,6 @@ jobs:
 
       - name: Install CocoaPods
         run: sudo gem install cocoapods
-
-      - name: Restore Flutter Packages
-        run: flutter pub get
-
-      - name: Update CocoaPods (Optional)
-        run: sudo gem update cocoapods --pre # Use without --pre for stable
-
-      - name: Reinstall CocoaPods
-        run: |
-          cd ios
-          pod deintegrate
-          pod install
-          cd ..
-
      
 
       - name: Clean Xcode Project
