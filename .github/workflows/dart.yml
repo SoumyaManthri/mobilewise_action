@@ -38,12 +38,7 @@ jobs:
         with:
           flutter-version: 3.16
 
-      - name: Install CocoaPods
-        run: |
-          sudo gem update cocoapods --pre
-          cd ios
-          pod update
-          cd ..
+     
 
       - name: Clean Xcode Project
         run: xcodebuild clean -workspace ios/Runner.xcworkspace -scheme Runner -configuration Release
