@@ -39,7 +39,12 @@ jobs:
           flutter-version: 3.16
 
      
-
+      - name: Reinstall CocoaPods
+        run: |
+          cd ios
+          pod deintegrate
+          pod install
+          cd ..
       - name: Clean Xcode Project
         run: xcodebuild clean -workspace ios/Runner.xcworkspace -scheme Runner -configuration Release
 
