@@ -1,10 +1,20 @@
-# Uncomment the next line to define a global platform for your project
-# platform :ios, '9.0'
+# --- Global Platform Specifications ---
+platform :ios, '12.0'  # Minimum iOS version supported
 
-target 'Runner' do
-  # Comment the next line if you don't want to use dynamic frameworks
-  use_frameworks!
+# --- Target(s) Section ---
+target 'Runner' do  # Replace 'Runner' with your actual iOS target name
+  use_frameworks!  # Opt-in for dynamic frameworks
 
-  # Pods for Runner
+  # --- Project Pods ---
+  pod 'Firebase/Analytics'   # Example dependencies
+  pod 'GoogleMaps'
 
+  # --- Post Installation Actions ---
+  post_install do |installer|
+    installer.pods_project.targets.each do |target|
+      target.build_configurations.each do |config|
+        # Potential code signing modifications as needed
+      end
+    end
+  end
 end
