@@ -1,70 +1,45 @@
-name: Flutter_iOS
+name: Generate Signed iOS IPA
 
-on:
-  push:
-    branches: [main]
+on: 
+  workflow_dispatch:  # Manually trigger builds
 
 jobs:
-  build_ios_distribution:
+  build_signed_ipa:
     runs-on: macos-latest
 
     steps:
-      - name: Checkout the code
+      - name: Checkout code
         uses: actions/checkout@v2
 
-      
-
-      - name: Install Apple Certificate (Distribution)
+      - name: Install Apple Certificate
         uses: apple-actions/import-codesign-certs@v1
         with:
-          p12-file-base64: ${{ secrets.P12_BASE64 }}
+          p12-file-base64: ${{ secrets.P12_BASE64 }} 
           p12-password: ${{ secrets.P12_PASSWORD }}
 
-      - name: Install Provisioning Profile (Distribution)
+      - name: Install Provisioning Profile
         env:
-          PROVISIONING_CERTIFICATE_BASE64: ${{ secrets.IOS_PROVISION_1 }}
+          PROVISIONING_PROFILE_BASE64: ${{ secrets.IOS_PROVISION_1 }} 
         run: |
-          PP_PATH=$RUNNER_TEMP/build_pp.mobileprovision
-          echo -n "$PROVISIONING_CERTIFICATE_BASE64" | base64 --decode --output $PP_PATH
+          # Create temporary files for certificates and profiles
+          PP_PATH=$RUNNER_TEMP/ios_distribution.mobileprovision
+          echo -n "$PROVISIONING_PROFILE_BASE64" | base64 --decode --output $PP_PATH
           mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
           cp $PP_PATH ~/Library/MobileDevice/Provisioning\ Profiles
 
-      - name: Install and Set Flutter Version
+      - name: Setup Flutter Environment
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: 3.16
+          flutter-version: '3.3.2' # Adjust if needed
 
-      - name: Deintegrate CocoaPods and Reinstall
-        run: |
-          cd ios
-          pod deintegrate
-          rm Podfile
-          echo "platform :ios, '12.0'" > Podfile
-          echo "target 'Runner' do" >> Podfile
-          echo "  use_frameworks!" >> Podfile
-          echo "end" >> Podfile
-          pod install
-          cd ..
+      - name: Restore Flutter Packages
+        run: flutter pub get
 
-      - name: Clean Xcode Project
-        run: xcodebuild clean -workspace ios/Runner.xcworkspace -scheme Runner -configuration Release
+      - name: Build Signed iOS Release App
+        run: flutter build ipa --release  # Use specific target/scheme if needed
 
-      - name: Build and Resolve Swift Dependencies
-        run: xcodebuild -resolvePackageDependencies -workspace ios/Runner.xcworkspace -scheme Runner -configuration Release
-
-      - name: Print Current Working Directory
-        run: pwd
-
-      - name: List Contents of the Directory
-        run: ls -ltr
-
-      - name: Build and Export .ipa (Distribution)
-        run: |
-          xcodebuild -workspace ios/Runner.xcworkspace -scheme Runner -configuration Release -sdk iphoneos -destination 'generic/platform=iOS' -archivePath build-output/app.xcarchive PROVISIONING_PROFILE_SPECIFIER="secondDistributioncertificate" clean archive CODE_SIGN_IDENTITY="Apple Distribution: Laxmiprasad Putta"
-          xcodebuild -exportArchive -archivePath build-output/app.xcarchive -exportPath build-output/ios -exportOptionsPlist ios/ExportOptions.plist
-
-      - name: Upload Build Artifacts (Distribution)
-        uses: actions/upload-artifact@v2
+      - name: Upload Signed IPA as Artifact
+        uses: actions/upload-artifact@v3
         with:
-          name: ios-build-distribution
-          path: build-output/ios
+          name: signed-ios-app.ipa
+          path: build/ios/ipa/Runner.ipa  # Adjust if the output path differs 
