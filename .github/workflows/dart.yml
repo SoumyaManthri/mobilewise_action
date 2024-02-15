@@ -38,7 +38,7 @@ jobs:
         run: flutter pub get
 
       - name: Build Signed iOS Release App
-        run: flutter build ipa --release  # Use specific target/scheme if needed
+        run: flutter build ipa --release -t lib/main_dev.dart --flavor DEV # Use specific target/scheme if needed
 
       - name: Upload Signed IPA as Artifact
         uses: actions/upload-artifact@v3
