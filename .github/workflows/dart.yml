@@ -60,7 +60,7 @@ jobs:
 
       - name: Build and Export .ipa (Distribution)
         run: |
-          xcodebuild -workspace ios/Runner.xcworkspace -scheme Runner -configuration Release -sdk iphoneos -destination 'generic/platform=iOS' -archivePath build-output/app.xcarchive PROVISIONING_PROFILE_SPECIFIER="secondDistributioncertificate" clean archive CODE_SIGN_IDENTITY="Apple Distribution: Laxmiprasad Putta(4RD8TSB5PJ)"
+          xcodebuild -workspace ios/Runner.xcworkspace -scheme Runner -configuration Release -sdk iphoneos -destination 'generic/platform=iOS' -archivePath build-output/app.xcarchive PROVISIONING_PROFILE_SPECIFIER="secondDistributioncertificate" clean archive CODE_SIGN_IDENTITY="Apple Distribution: Laxmiprasad Putta"
           xcodebuild -exportArchive -archivePath build-output/app.xcarchive -exportPath build-output/ios -exportOptionsPlist ios/ExportOptions.plist
 
       - name: Upload Build Artifacts (Distribution)
