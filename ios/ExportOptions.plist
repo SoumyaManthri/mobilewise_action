@@ -7,16 +7,11 @@
          <key>method</key>
          <string>app-store</string>
          <key>signingStyle</key>
-         <string>manual</string>
+         <string>automatic</string>
          <key>stripSwiftSymbols</key>
          <true/>
          <key>teamID</key>
          <string>4RD8TSB5PJ</string>
-         <key>provisioningProfiles</key>
-             <dict>
-                 <key>com.vassar.mobilewise.flutter-mobilewise</key>
-                 <string>237b5a31-3704-4975-b50e-8033f78df361</string>
-             </dict>
 
              <key>thinning</key>
          <string>&lt;none&gt;</string>
