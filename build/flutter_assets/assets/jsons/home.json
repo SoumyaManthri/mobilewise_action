@@ -1,0 +1,20 @@
+{
+  "appId": "650a6d3c-3005-4ca3-903a-45eabb66e01d",
+  "userName": "arjun@vassarlabs.com",
+  "forms": {
+    "screenKey": "screen_1",
+    "screenName": "Home",
+    "buttons": [
+      {
+        "key": "re",
+        "label": "Report Event",
+        "child": "rf1"
+      },
+      {
+        "key": "tes",
+        "label": "Track Event Status",
+        "child": "track_failure_form_1"
+      }
+    ]
+  }
+}
