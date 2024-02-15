@@ -22,7 +22,7 @@ jobs:
 
       - name: Install Provisioning Profile (Distribution)
         env:
-          PROVISIONING_CERTIFICATE_BASE64: ${{ secrets.IOS_PROVISION1 }}
+          PROVISIONING_CERTIFICATE_BASE64: ${{ secrets.IOS_PROVISION_2 }}
         run: |
           PP_PATH=$RUNNER_TEMP/build_pp.mobileprovision
           echo -n "$PROVISIONING_CERTIFICATE_BASE64" | base64 --decode --output $PP_PATH
@@ -60,7 +60,7 @@ jobs:
 
       - name: Build and Export .ipa (Distribution)
         run: |
-          xcodebuild -workspace ios/Runner.xcworkspace -scheme Runner -configuration Release -sdk iphoneos -destination 'generic/platform=iOS' -allowProvisioningUpdates -archivePath build-output/app.xcarchive clean archive 
+          xcodebuild -workspace ios/Runner.xcworkspace -scheme Runner -configuration Release -sdk iphoneos -destination 'generic/platform=iOS' -archivePath build-output/app.xcarchive PROVISIONING_PROFILE_SPECIFIER="secondDistributioncertificate" clean archive CODE_SIGN_IDENTITY="Apple Distribution: Laxmiprasad Putta"
           xcodebuild -exportArchive -archivePath build-output/app.xcarchive -exportPath build-output/ios -exportOptionsPlist ios/ExportOptions.plist
 
       - name: Upload Build Artifacts (Distribution)
