@@ -12,10 +12,11 @@ jobs:
       - name: Checkout the code
         uses: actions/checkout@v2
 
-      - name: Clean Derived Data (Excluding Podfile)
+      - name: Clean Derived Data
         run: |
           rm -rf ~/Library/Developer/Xcode/DerivedData
           rm -rf ios/Pods
+          rm -rf ios/Podfile.lock
 
       - name: Install Apple Certificate (Distribution)
         uses: apple-actions/import-codesign-certs@v1
@@ -35,18 +36,18 @@ jobs:
       - name: Install and Set Flutter Version
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: 3.16 
+          flutter-version: 3.16
 
-      - name: Install CocoaPods
-        run: sudo gem install cocoapods
-
-      - name: Restore Flutter Packages
-        run: flutter pub get
-
-      - name: CocoaPods Integration and Updates
+      - name: Deintegrate CocoaPods and Reinstall
         run: |
           cd ios
-          pod install  # Or 'pod update' if checking for updated dependencies is needed
+          pod deintegrate
+          rm Podfile
+          echo "platform :ios, '10.0'" > Podfile
+          echo "target 'Runner' do" >> Podfile
+          echo "  use_frameworks!" >> Podfile
+          echo "end" >> Podfile
+          pod install
           cd ..
 
       - name: Clean Xcode Project
