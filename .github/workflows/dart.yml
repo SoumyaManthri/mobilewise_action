@@ -1,7 +1,9 @@
 name: Generate Signed iOS IPA
 
-on: 
-  workflow_dispatch:  # Manually trigger builds
+on:
+  push:
+    branches: [main]
+
 
 jobs:
   build_signed_ipa:
