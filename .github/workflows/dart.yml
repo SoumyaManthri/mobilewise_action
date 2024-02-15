@@ -22,7 +22,7 @@ jobs:
 
       - name: Install Provisioning Profile (Distribution)
         env:
-          PROVISIONING_CERTIFICATE_BASE64: ${{ secrets.IOS_PROVISION_2 }}
+          PROVISIONING_CERTIFICATE_BASE64: ${{ secrets.IOS_PROVISION_1 }}
         run: |
           PP_PATH=$RUNNER_TEMP/build_pp.mobileprovision
           echo -n "$PROVISIONING_CERTIFICATE_BASE64" | base64 --decode --output $PP_PATH
