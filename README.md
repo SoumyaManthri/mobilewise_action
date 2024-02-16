@@ -15,3 +15,4 @@ flutter pub run build_runner build --delete-conflicting-outputs
 
 flutter packages pub run build_runner build --delete-conflicting-outputs
 --> When adding/editing TypeAdapters for Hive
+hi
