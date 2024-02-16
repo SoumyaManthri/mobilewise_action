@@ -2,8 +2,7 @@ name: Generate Signed iOS IPA
 
 on:
   push:
-    branches: [main]
-
+    branches: [main]  
 
 jobs:
   build_signed_ipa:
@@ -23,8 +22,8 @@ jobs:
         env:
           PROVISIONING_PROFILE_BASE64: ${{ secrets.IOS_PROVISION_2 }} 
         run: |
-          # Create temporary files for certificates and profiles
-          PP_PATH=$RUNNER_TEMP/ios_distribution.mobileprovision
+          # Create temporary files for certificates and profiles (optional)
+          PP_PATH=$RUNNER_TEMP/ios_distribution.mobileprovision 
           echo -n "$PROVISIONING_PROFILE_BASE64" | base64 --decode --output $PP_PATH
           mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
           cp $PP_PATH ~/Library/MobileDevice/Provisioning\ Profiles
@@ -32,16 +31,28 @@ jobs:
       - name: Setup Flutter Environment
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.16.3' # Adjust if needed
+          flutter-version: '3.16.3' 
 
       - name: Restore Flutter Packages
         run: flutter pub get
 
-      - name: Build Signed iOS Release App
-        run: flutter build ipa --release -t lib/main_dev.dart --flavor DEV # Use specific target/scheme if needed
+      - name: Build Signed iOS Release App (xcodebuild)
+        run: |
+          xcodebuild -workspace ios/Runner.xcworkspace \
+                     -scheme Runner \ 
+                     -configuration Release \
+                     -archivePath build/ios/Runner.xcarchive \
+                     archive CODE_SIGN_IDENTITY="Apple Distribution: Laxmiprasad Putta (4RD8TSB5PJ)"
+
+      - name: Create IPA  # Add this subsequent step
+        run: |
+          xcodebuild -exportArchive \
+                     -archivePath build/ios/Runner.xcarchive \
+                     -exportOptionsPlist ios/ExportOptions.plist \
+                     -exportPath build/ios/ipa
 
       - name: Upload Signed IPA as Artifact
         uses: actions/upload-artifact@v3
         with:
           name: signed-ios-app.ipa
-          path: build/ios/ipa/Runner.ipa  
+          path: build/ios/ipa/Runner.ipa 
