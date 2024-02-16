@@ -33,39 +33,37 @@ jobs:
         with:
           flutter-version: '3.16.3' 
 
-      - name: Restore Flutter Packages
-        run: flutter pub get
-
+      - name: Deintegrate CocoaPods and Reinstall
+        run: |
+          cd ios
+          pod deintegrate
+          rm Podfile
+          echo "platform :ios, '12.0'" > Podfile
+          echo "target 'Runner' do" >> Podfile
+          echo "  use_frameworks!" >> Podfile
+          echo "end" >> Podfile
+          pod install
+          cd ..
 
       - name: Clean Xcode Project
         run: xcodebuild clean -workspace ios/Runner.xcworkspace -scheme Runner -configuration Release
 
-      - name: Reinstall CocoaPods
-        run: |
-          cd ios
-          pod deintegrate
-          pod install
-          cd ..
-
-      - name: Build resolve Swift dependencies
+      - name: Build and Resolve Swift Dependencies
         run: xcodebuild -resolvePackageDependencies -workspace ios/Runner.xcworkspace -scheme Runner -configuration Release
 
+      - name: Print Current Working Directory
+        run: pwd
 
-      - name: Build Signed iOS Release App (xcodebuild)
-        run: | 
-          xcodebuild -workspace ios/Runner.xcworkspace -scheme Runner -configuration Release -sdk iphoneos -destination 'generic/platform=iOS' -archivePath build-output/app.xcarchive PROVISIONING_PROFILE_SPECIFIER="secondDistributioncertificate" clean archive CODE_SIGN_IDENTITY="Apple Distribution: Laxmiprasad Putta"
+      - name: List Contents of the Directory
+        run: ls -ltr
 
-
-
-      - name: Create IPA  # Add this subsequ
+      - name: Build and Export .ipa (Distribution)
         run: |
-          xcodebuild -exportArchive \
-                     -archivePath build/ios/Runner.xcarchive \
-                     -exportOptionsPlist ios/ExportOptions.plist \
-                     -exportPath build/ios/ipa
+          xcodebuild -workspace ios/Runner.xcworkspace -scheme Runner -configuration Release -sdk iphoneos -destination 'generic/platform=iOS' -archivePath build-output/app.xcarchive PROVISIONING_PROFILE_SPECIFIER="secondDistributioncertificate" clean archive CODE_SIGN_IDENTITY="Apple Distribution: Laxmiprasad Putta"
+          xcodebuild -exportArchive -archivePath build-output/app.xcarchive -exportPath build-output/ios -exportOptionsPlist ios/ExportOptions.plist
 
-      - name: Upload Signed IPA as Artifact
-        uses: actions/upload-artifact@v3
+      - name: Upload Build Artifacts (Distribution)
+        uses: actions/upload-artifact@v2
         with:
-          name: signed-ios-app.ipa
-          path: build/ios/ipa/Runner.ipa 
+          name: ios-build-distribution
+          path: build-output/ios
