@@ -1,6 +1,6 @@
 name: Build & Sign iOS App
 
-on: 
+on:
   push:
     branches: [ master, main ] 
 
@@ -9,31 +9,45 @@ jobs:
     runs-on: macos-latest  
 
     steps:
-      - uses: actions/checkout@v3
-      - uses: ruby/setup-ruby@v1
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Install Ruby and Bundler
+        uses: ruby/setup-ruby@v1
         with:
           ruby-version: '3.1.4' 
-      - run: bundle install
+
+      - name: Install Fastlane
+        run: |
+          gem install fastlane -NV
 
       - name: Install Certificates and Profiles
         env:
-          CERT_BASE64: ${{ secrets.P12_BASE64}}
-          CERT_PASSWORD: ${{ secrets.P12_PASSWORD}}
-          PROFILE_BASE64: ${{ secrets.IOS_PROVISION_1}}
+          CERT_BASE64: ${{ secrets.P12_BASE64 }}
+          CERT_PASSWORD: ${{ secrets.P12_PASSWORD }}
+          PROFILE_BASE64: ${{ secrets.IOS_PROVISION_1 }}
         run: |
-          create_keychain name: codesigning password: "temp_password" default_keychain: true unlock: true 
+          create_keychain name: "codesigning" password: "temp_password" default_keychain: true unlock: true
 
-          echo $P12_BASE64 | base64 --decode > certificate.cer
-          import_certificate certificate_path: "certificate.cer" keychain_path: "$HOME/Library/Keychains/codesigning" -k $CERT_PASSWORD
+          echo $CERT_BASE64 | base64 --decode > certificate.p12
+          echo $PROFILE_BASE64 | base64 --decode > profile.mobileprovision
 
-          echo $IOS_PROVISION_1 | base64 --decode > profile.mobileprovision
-          uuid=`/usr/libexec/PlistBuddy -c "Print UUID" profile.mobileprovision`
-          import_profile profile_path: "profile.mobileprovision" uuid: $uuid keychain_path: "$HOME/Library/Keychains/codesigning"  
+          security create-keychain -p temp_password codesigning.keychain
+          security import certificate.p12 -k ~/Library/Keychains/codesigning.keychain -P $CERT_PASSWORD -T /usr/bin/codesign
+          security set-key-partition-list -S apple-tool:,apple: -s -k temp_password ~/Library/Keychains/codesigning.keychain
+          security list-keychains -s ~/Library/Keychains/codesigning.keychain
+          security unlock-keychain -p temp_password ~/Library/Keychains/codesigning.keychain
 
-      - run: fastlane build_ipa 
+          uuid=$(grep -a -A1 UUID profile.mobileprovision | grep -o "[-a-zA-Z0-9]\{36\}")
+          echo "UUID: $uuid"
+          mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
+          cp profile.mobileprovision ~/Library/MobileDevice/Provisioning\ Profiles/$uuid.mobileprovision
+
+      - name: Build IPA using Fastlane
+        run: fastlane build
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v3
         with:
           name: ios-app.ipa
-          path: path/to/your/built.ipa 
+          path: path/to/your/built.ipa
