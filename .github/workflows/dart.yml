@@ -1,69 +1,39 @@
-name: Generate Signed iOS IPA
+name: Build & Sign iOS App
 
-on:
+on: 
   push:
-    branches: [main]  
+    branches: [ master, main ] 
 
 jobs:
-  build_signed_ipa:
-    runs-on: macos-latest
+  build:
+    runs-on: macos-latest  
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: Install Apple Certificate
-        uses: apple-actions/import-codesign-certs@v1
+      - uses: actions/checkout@v3
+      - uses: ruby/setup-ruby@v1
         with:
-          p12-file-base64: ${{ secrets.P12_BASE64 }} 
-          p12-password: ${{ secrets.P12_PASSWORD }}
+          ruby-version: '3.x' 
+      - run: bundle install
 
-      - name: Install Provisioning Profile
+      - name: Install Certificates and Profiles
         env:
-          PROVISIONING_PROFILE_BASE64: ${{ secrets.IOS_PROVISION_2 }} 
+          CERT_BASE64: ${{ secrets.P12_BASE64}}
+          CERT_PASSWORD: ${{ secrets.P12_PASSWORD}}
+          PROFILE_BASE64: ${{ secrets.IOS_PROVISION_1}}
         run: |
-          # Create temporary files for certificates and profiles (optional)
-          PP_PATH=$RUNNER_TEMP/ios_distribution.mobileprovision 
-          echo -n "$PROVISIONING_PROFILE_BASE64" | base64 --decode --output $PP_PATH
-          mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
-          cp $PP_PATH ~/Library/MobileDevice/Provisioning\ Profiles
+          create_keychain name: codesigning password: "temp_password" default_keychain: true unlock: true 
 
-      - name: Setup Flutter Environment
-        uses: subosito/flutter-action@v2
+          echo $P12_BASE64 | base64 --decode > certificate.cer
+          import_certificate certificate_path: "certificate.cer" keychain_path: "$HOME/Library/Keychains/codesigning" -k $CERT_PASSWORD
+
+          echo $IOS_PROVISION_1 | base64 --decode > profile.mobileprovision
+          uuid=`/usr/libexec/PlistBuddy -c "Print UUID" profile.mobileprovision`
+          import_profile profile_path: "profile.mobileprovision" uuid: $uuid keychain_path: "$HOME/Library/Keychains/codesigning"  
+
+      - run: fastlane build_ipa 
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v3
         with:
-          flutter-version: '3.16.3' 
-
-      - name: Deintegrate CocoaPods and Reinstall
-        run: |
-          cd ios
-          pod deintegrate
-          rm Podfile
-          echo "platform :ios, '12.0'" > Podfile
-          echo "target 'Runner' do" >> Podfile
-          echo "  use_frameworks!" >> Podfile
-          echo "end" >> Podfile
-          pod install
-          cd ..
-
-      - name: Clean Xcode Project
-        run: xcodebuild clean -workspace ios/Runner.xcworkspace -scheme Runner -configuration Release
-
-      - name: Build and Resolve Swift Dependencies
-        run: xcodebuild -resolvePackageDependencies -workspace ios/Runner.xcworkspace -scheme Runner -configuration Release
-
-      - name: Print Current Working Directory
-        run: pwd
-
-      - name: List Contents of the Directory
-        run: ls -ltr
-
-      - name: Build and Export .ipa (Distribution)
-        run: |
-          xcodebuild -workspace ios/Runner.xcworkspace -scheme Runner -configuration Release -sdk iphoneos -destination 'generic/platform=iOS' -archivePath build-output/app.xcarchive PROVISIONING_PROFILE_SPECIFIER="secondDistributioncertificate" clean archive CODE_SIGN_IDENTITY="Apple Distribution: Laxmiprasad Putta"
-          xcodebuild -exportArchive -archivePath build-output/app.xcarchive -exportPath build-output/ios -exportOptionsPlist ios/ExportOptions.plist
-
-      - name: Upload Build Artifacts (Distribution)
-        uses: actions/upload-artifact@v2
-        with:
-          name: ios-build-distribution
-          path: build-output/ios
+          name: ios-app.ipa
+          path: path/to/your/built.ipa 
