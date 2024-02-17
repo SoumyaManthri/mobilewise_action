@@ -2,7 +2,7 @@ name: Build & Sign iOS App
 
 on:
   push:
-    branches: [ master, main ] 
+    branches: [ main ] 
 
 jobs:
   build:
@@ -28,19 +28,22 @@ jobs:
           CERT_PASSWORD: ${{ secrets.P12_PASSWORD }}
           PROFILE_BASE64: ${{ secrets.IOS_PROVISION_1 }}
         run: |
-          echo $CERT_BASE64 | base64 --decode > certificate.p12
-          echo $PROFILE_BASE64 | base64 --decode > profile.mobileprovision
+          # Decode the certificate and provisioning profile
+          echo "$CERT_BASE64" | base64 --decode > certificate.p12
+          echo "$PROFILE_BASE64" | base64 --decode > profile.mobileprovision
 
-          create_keychain name: "codesigning" password: "temp_password" default_keychain: true unlock: true
-
+          # Create a new keychain, import the certificate, and set it as default
           security create-keychain -p temp_password codesigning.keychain
-          security import certificate.p12 -k ~/Library/Keychains/codesigning.keychain -P $CERT_PASSWORD -T /usr/bin/codesign
+          security import certificate.p12 -k ~/Library/Keychains/codesigning.keychain -P "$CERT_PASSWORD" -T /usr/bin/codesign
           security set-key-partition-list -S apple-tool:,apple: -s -k temp_password ~/Library/Keychains/codesigning.keychain
           security list-keychains -s ~/Library/Keychains/codesigning.keychain
           security unlock-keychain -p temp_password ~/Library/Keychains/codesigning.keychain
 
+          # Extract the UUID from the provisioning profile
           uuid=$(grep -a -A1 UUID profile.mobileprovision | grep -o "[-a-zA-Z0-9]\{36\}")
           echo "UUID: $uuid"
+
+          # Copy the provisioning profile to the appropriate directory
           mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
           cp profile.mobileprovision ~/Library/MobileDevice/Provisioning\ Profiles/$uuid.mobileprovision
 
