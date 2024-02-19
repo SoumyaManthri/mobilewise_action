@@ -14,5 +14,3 @@ target 'Runner' do
   #   inherit! :search_paths
   # end
 end
-
-
