@@ -1,0 +1,12 @@
+---
+triple:          'arm64-apple-darwin'
+binary-path:     '/Users/vassarlabs/Desktop/mobilewiseios/cicd_ios/build/ios/Release-iphoneos/safe_device/safe_device.framework/safe_device'
+relocations:
+  - { offsetInCU: 0x33, offset: 0x3CE0, size: 0x8, addend: 0x0, symName: _safe_deviceVersionString, symObjAddr: 0x0, symBinAddr: 0x44F8, symSize: 0x0 }
+  - { offsetInCU: 0x67, offset: 0x3D14, size: 0x8, addend: 0x0, symName: _safe_deviceVersionNumber, symObjAddr: 0x30, symBinAddr: 0x4528, symSize: 0x0 }
+  - { offsetInCU: 0x27, offset: 0x3D50, size: 0x8, addend: 0x0, symName: '+[SafeDevicePlugin registerWithRegistrar:]', symObjAddr: 0x0, symBinAddr: 0x4000, symSize: 0xA4 }
+  - { offsetInCU: 0x59, offset: 0x3D82, size: 0x8, addend: 0x0, symName: '+[SafeDevicePlugin registerWithRegistrar:]', symObjAddr: 0x0, symBinAddr: 0x4000, symSize: 0xA4 }
+  - { offsetInCU: 0xB2, offset: 0x3DDB, size: 0x8, addend: 0x0, symName: '-[SafeDevicePlugin handleMethodCall:result:]', symObjAddr: 0xA4, symBinAddr: 0x40A4, symSize: 0x228 }
+  - { offsetInCU: 0x142, offset: 0x3E6B, size: 0x8, addend: 0x0, symName: '-[SafeDevicePlugin isJailBroken]', symObjAddr: 0x2CC, symBinAddr: 0x42CC, symSize: 0xC }
+  - { offsetInCU: 0x172, offset: 0x3E9B, size: 0x8, addend: 0x0, symName: '-[SafeDevicePlugin isRealDevice]', symObjAddr: 0x2D8, symBinAddr: 0x42D8, symSize: 0x8 }
+...

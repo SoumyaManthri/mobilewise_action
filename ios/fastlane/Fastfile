@@ -1,0 +1,20 @@
+platform :ios do
+  desc "Install CocoaPods dependencies"
+  lane :install_pods do
+    sh "sudo gem install cocoapods"
+    sh "pod install"
+  end
+
+  desc "Build and sign the iOS app for distribution"
+  lane :build_ipa do
+    # Set the environment variable for interactive mode
+    ENV["FASTLANE_DONT_STORE_PASSWORD"] = "true"
+
+    clean_build_artifacts
+
+    gym(
+      scheme: "Runner",
+      export_method: "app-store" # Or 'ad-hoc' if needed
+    )
+  end
+end

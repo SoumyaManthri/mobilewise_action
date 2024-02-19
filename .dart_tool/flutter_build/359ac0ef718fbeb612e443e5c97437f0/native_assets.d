@@ -1,0 +1,1 @@
+ /Users/vassarlabs/Desktop/mobilewiseios/cicd_ios/.dart_tool/flutter_build/359ac0ef718fbeb612e443e5c97437f0/native_assets.yaml: 
