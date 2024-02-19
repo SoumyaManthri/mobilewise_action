@@ -20,7 +20,7 @@ jobs:
 
       - name: Install Provisioning Profile
         env:
-          PROVISIONING_PROFILE_BASE64: ${{ secrets.IOS_PROVISION_2 }} 
+          PROVISIONING_PROFILE_BASE64: ${{ secrets.NEWMOBILEWISEDISTRIBUTION }} 
         run: |
           # Create temporary files for certificates and profiles (optional)
           PP_PATH=$RUNNER_TEMP/ios_distribution.mobileprovision 
