@@ -57,7 +57,7 @@ jobs:
       - name: Remove Podfile and Build Flutter iOS
         run: |
           rm ios/Podfile
-          flutter build ios
+          flutter build ios --target=lib/main_prod.dart
           
       - name: Clean Xcode Project
         run: xcodebuild clean -workspace ios/Runner.xcworkspace -scheme Runner -configuration Release
