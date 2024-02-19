@@ -36,9 +36,6 @@ jobs:
       - name: Check Flutter SDK Installation
         run: flutter --version
 
-  #    - name: Update Flutter SDK
-   #     run: flutter upgrade
-
       - name: Reinstall Flutter Dependencies
         run: flutter pub get
 
@@ -57,6 +54,9 @@ jobs:
           pod install
           cd ..
 
+      - name: Build Flutter iOS Release
+        run: flutter build ios --release --no-codesign
+
       - name: Clean Xcode Project
         run: xcodebuild clean -workspace ios/Runner.xcworkspace -scheme Runner -configuration Release
 
@@ -73,7 +73,6 @@ jobs:
         run: |
           xcrun xcodebuild -workspace ios/Runner.xcworkspace -configuration Debug -scheme Runner VERBOSE_SCRIPT_LOGGING=YES COMPILER_INDEX_STORE_ENABLE=NO EXCLUDED_ARCHS=arm64 PROVISIONING_PROFILE_SPECIFIER='NewMobilewiseDistribution'
           xcodebuild -exportArchive -archivePath build-output/app.xcarchive -exportPath build-output/ios -exportOptionsPlist ios/ExportOptions.plist
-
 
       - name: Upload Build Artifacts (Distribution)
         uses: actions/upload-artifact@v2
