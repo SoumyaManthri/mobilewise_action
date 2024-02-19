@@ -55,7 +55,8 @@ jobs:
           cd ..
 
       - name: Build Flutter iOS Release
-        run: flutter build ios --release --no-codesign
+        run: flutter build ios --release --no-codesign --target=lib/main_prod.dart
+
 
       - name: Clean Xcode Project
         run: xcodebuild clean -workspace ios/Runner.xcworkspace -scheme Runner -configuration Release
