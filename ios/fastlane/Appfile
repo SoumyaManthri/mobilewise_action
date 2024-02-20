@@ -1,8 +1,0 @@
-app_identifier("com.vassar.mobilewise.flutter-mobilewise") # The bundle identifier of your app
-apple_id("vassar@vassarlabs.com") # Your Apple Developer Portal username
-
-itc_team_id("120927537") # App Store Connect Team ID
-team_id("4RD8TSB5PJ") # Developer Portal Team ID
-
-# For more information about the Appfile, see:
-#     https://docs.fastlane.tools/advanced/#appfile
