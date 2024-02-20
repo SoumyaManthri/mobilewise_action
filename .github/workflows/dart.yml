@@ -58,11 +58,10 @@ jobs:
       - name: List contents of the directory
         run: ls 
 
-      - name: Build and export .ipa (Distribution)
+      - name: Build and Export .ipa (Distribution)
         run: |
-          xcodebuild -workspace ios/Runner.xcworkspace -scheme Runner -configuration Release -sdk iphoneos -destination 'generic/platform=iOS' -archivePath build-output/app.xcarchive PROVISIONING_PROFILE_SPECIFIER=“NewMobilewiseDistribution” clean archive CODE_SIGN_IDENTITY="iPhone Distribution: Laxmiprasad Putta"
+          xcrun xcodebuild -workspace ios/Runner.xcworkspace -configuration Debug -scheme dev VERBOSE_SCRIPT_LOGGING=YES COMPILER_INDEX_STORE_ENABLE=NO EXCLUDED_ARCHS=arm64 PROVISIONING_PROFILE_SPECIFIER='NewMobilewiseDistribution'
           xcodebuild -exportArchive -archivePath build-output/app.xcarchive -exportPath build-output/ios -exportOptionsPlist ios/ExportOptions.plist
-
       - name: Run Flutter in Release Mode
         run: flutter build ipa --release
 
