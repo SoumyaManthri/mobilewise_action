@@ -45,7 +45,7 @@ jobs:
       - name: Deintegrate CocoaPods and Reinstall
         run: |
           cd ios
-          pod deintegrate
+          pod deintegrate Runner.xcodeproj
           rm Podfile
           echo "platform :ios, '12.0'" > Podfile
           echo "target 'Runner' do" >> Podfile
