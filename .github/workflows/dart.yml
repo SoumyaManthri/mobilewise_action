@@ -1,84 +1,72 @@
-name: Generate Signed iOS IPA
+name: Flutter_iOS
 
 on:
   push:
-    branches: [main]  
+    branches: [main]
 
 jobs:
-  build_signed_ipa:
+  build_ios_distribution:
     runs-on: macos-latest
 
     steps:
-      - name: Checkout code
+      - name: Checkout the code
         uses: actions/checkout@v2
 
-      - name: Install Apple Certificate
+      - name: Clean Derived Data
+        run: |
+          rm -rf ~/Library/Developer/Xcode/DerivedData
+
+      - name: Install Apple Certificate (Distribution)
         uses: apple-actions/import-codesign-certs@v1
         with:
-          p12-file-base64: ${{ secrets.P12_BASE64 }} 
+          p12-file-base64: ${{ secrets.P12_BASE64 }}
           p12-password: ${{ secrets.P12_PASSWORD }}
 
-      - name: Install Provisioning Profile
+      - name: Install the provisioning profile (Distribution)
         env:
-          PROVISIONING_PROFILE_BASE64: ${{ secrets.NEWMOBILEWISEDISTRIBUTION }} 
+          PROVISIONING_CERTIFICATE_BASE64: ${{ secrets.NEWMOBILEWISEDISTRIBUTION }}
         run: |
-          # Create temporary files for certificates and profiles (optional)
-          PP_PATH=$RUNNER_TEMP/ios_distribution.mobileprovision 
-          echo -n "$PROVISIONING_PROFILE_BASE64" | base64 --decode --output $PP_PATH
+          PP_PATH=$RUNNER_TEMP/build_pp.mobileprovision
+          echo -n "$PROVISIONING_CERTIFICATE_BASE64" | base64 --decode --output $PP_PATH
           mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
           cp $PP_PATH ~/Library/MobileDevice/Provisioning\ Profiles
 
-      - name: Setup Flutter Environment
+      - name: Install and set Flutter version
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.16' 
+          flutter-version: 3.16
 
-      - name: Check Flutter SDK Installation
-        run: flutter --version
-
-      - name: Reinstall Flutter Dependencies
+      - name: Restore packages
         run: flutter pub get
 
-      - name: Clear Flutter Cache
-        run: flutter clean
-
-      - name: Deintegrate CocoaPods and Reinstall
-        run: |
-          cd ios
-          pod deintegrate
-          rm Podfile
-          echo "platform :ios, '12.0'" > Podfile
-          echo "target 'Runner' do" >> Podfile
-          echo "  use_frameworks!" >> Podfile
-          echo "end" >> Podfile
-          pod install
-          cd ..
-
-      - name: Remove Podfile and Build Flutter iOS
-        run: |
-          rm ios/Podfile
-          flutter build ios --target=lib/main_prod.dart
-          
       - name: Clean Xcode Project
         run: xcodebuild clean -workspace ios/Runner.xcworkspace -scheme Runner -configuration Release
 
-      - name: Build and Resolve Swift Dependencies
+      - name: Reinstall CocoaPods
+        run: |
+          cd ios
+          pod deintegrate
+          pod install
+          cd ..
+
+      - name: Build resolve Swift dependencies
         run: xcodebuild -resolvePackageDependencies -workspace ios/Runner.xcworkspace -scheme Runner -configuration Release
 
-      - name: Print Current Working Directory
+      - name: Print current working directory
         run: pwd
 
-      - name: List Contents of the Directory
-        run: ls -ltr
+      - name: List contents of the directory
+        run: ls 
 
-      - name: Build and Export .ipa (Distribution)
+      - name: Build and export .ipa (Distribution)
         run: |
-          xcrun xcodebuild -workspace ios/Runner.xcworkspace -configuration Debug -scheme dev VERBOSE_SCRIPT_LOGGING=YES COMPILER_INDEX_STORE_ENABLE=NO EXCLUDED_ARCHS=arm64 -allowProvisioningUpdates
+          xcodebuild -workspace ios/Runner.xcworkspace -scheme Runner -configuration Release -sdk iphoneos -destination 'generic/platform=iOS' -archivePath build-output/app.xcarchive PROVISIONING_PROFILE_SPECIFIER=“NewMobilewiseDistribution” clean archive CODE_SIGN_IDENTITY="iPhone Distribution: Laxmiprasad Putta"
           xcodebuild -exportArchive -archivePath build-output/app.xcarchive -exportPath build-output/ios -exportOptionsPlist ios/ExportOptions.plist
 
-      
+      - name: Run Flutter in Release Mode
+        run: flutter build ipa --release
 
-      - name: Upload Build Artifacts (Distribution)
+      - name: Upload build artifacts (Distribution)
         uses: actions/upload-artifact@v2
         with:
           name: ios-build-distribution
