@@ -65,9 +65,8 @@ jobs:
 
       - name: Build and Export .ipa (Distribution)
         run: |
-          xcrun xcodebuild -workspace ios/Runner.xcworkspace -configuration Release -scheme Runner VERBOSE_SCRIPT_LOGGING=YES COMPILER_INDEX_STORE_ENABLE=NO PROVISIONING_PROFILE_SPECIFIER='ADHOC_MOBILEWISE' FLUTTER_TARGET=lib/main_dev.dart
+          xcodebuild -workspace ios/Runner.xcworkspace -scheme Runner -configuration Release -sdk iphoneos -destination 'generic/platform=iOS' -archivePath build-output/app.xcarchive PROVISIONING_PROFILE_SPECIFIER="Adhoc_Mobilewise" clean archive CODE_SIGN_IDENTITY="iPhone Distribution: Laxmiprasad Putta"
           xcodebuild -exportArchive -archivePath build-output/app.xcarchive -exportPath build-output/ios -exportOptionsPlist ios/ExportOptions.plist
-
       - name: Run Flutter in Release Mode
         run: flutter build ipa --release --target=lib/main_dev.dart
 
