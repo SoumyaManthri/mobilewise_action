@@ -3,15 +3,15 @@
 <plist version="1.0">
 <dict>
   <key>CFBundleDevelopmentRegion</key>
-  <string>en</string>
+  <string>$(DEVELOPMENT_LANGUAGE)</string>
   <key>CFBundleExecutable</key>
-  <string>Flutter</string>
+  <string>App</string>
   <key>CFBundleIdentifier</key>
-  <string>io.flutter.flutter</string>
+  <string>io.flutter.flutter.app</string>
   <key>CFBundleInfoDictionaryVersion</key>
   <string>6.0</string>
   <key>CFBundleName</key>
-  <string>Flutter</string>
+  <string>App</string>
   <key>CFBundlePackageType</key>
   <string>FMWK</string>
   <key>CFBundleShortVersionString</key>
@@ -21,10 +21,6 @@
   <key>CFBundleVersion</key>
   <string>1.0</string>
   <key>MinimumOSVersion</key>
-  <string>11.0</string>
-  <key>FlutterEngine</key>
-  <string>4a585b79294e830fa89c24924d58a27cc8fbf406</string>
-  <key>ClangVersion</key>
-  <string>b'Fuchsia clang version 18.0.0 (https://llvm.googlesource.com/llvm-project 576b184d6e3b633f51b908b61ebd281d2ecbf66f)'</string>
+  <string>12.0</string>
 </dict>
 </plist>
