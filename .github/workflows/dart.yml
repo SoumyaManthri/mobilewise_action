@@ -24,7 +24,7 @@ jobs:
 
       - name: Install the provisioning profile (Distribution)
         env:
-          PROVISIONING_CERTIFICATE_BASE64: ${{ secrets.NEWMOBILEWISEDISTRIBUTION }}
+          PROVISIONING_CERTIFICATE_BASE64: ${{ secrets.ADHOC_MOBILEWISE }}
         run: |
           PP_PATH=$RUNNER_TEMP/build_pp.mobileprovision
           echo -n "$PROVISIONING_CERTIFICATE_BASE64" | base64 --decode --output $PP_PATH
@@ -65,7 +65,7 @@ jobs:
 
       - name: Build and Export .ipa (Distribution)
         run: |
-          xcrun xcodebuild -workspace ios/Runner.xcworkspace -configuration Release -scheme Runner VERBOSE_SCRIPT_LOGGING=YES COMPILER_INDEX_STORE_ENABLE=NO PROVISIONING_PROFILE_SPECIFIER='' FLUTTER_TARGET=lib/main_dev.dart
+          xcrun xcodebuild -workspace ios/Runner.xcworkspace -configuration Release -scheme Runner VERBOSE_SCRIPT_LOGGING=YES COMPILER_INDEX_STORE_ENABLE=NO PROVISIONING_PROFILE_SPECIFIER='ADHOC_MOBILEWISE' FLUTTER_TARGET=lib/main_dev.dart
           xcodebuild -exportArchive -archivePath build-output/app.xcarchive -exportPath build-output/ios -exportOptionsPlist ios/ExportOptions.plist
 
       - name: Run Flutter in Release Mode
