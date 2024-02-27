@@ -61,7 +61,7 @@ jobs:
         run: pwd
 
       - name: List contents of the directory
-        run: ls 
+        run: ls -ltr
 
       - name: Build and Export .ipa (Distribution)
         run: |
