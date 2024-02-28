@@ -32,7 +32,7 @@ jobs:
           PROVISIONING_CERTIFICATE_BASE64: ${{ secrets.ADHOC_MOBILEWISE }}
         run: |
           #PP_PATH=$RUNNER_TEMP/build_pp.mobileprovision
-          mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles/4RD8TSB5PJ
+          mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
           echo -n "$PROVISIONING_CERTIFICATE_BASE64" | base64 --decode --output ~/Library/MobileDevice/Provisioning\ Profiles/Adhoc_Mobilewise.mobileprovision
           
           #cp $PP_PATH ~/Library/MobileDevice/Provisioning\ Profiles  
