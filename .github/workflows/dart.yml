@@ -36,7 +36,7 @@ jobs:
           echo -n "$PROVISIONING_CERTIFICATE_BASE64" | base64 --decode --output ~/Library/MobileDevice/Provisioning\ Profiles/build_pp.mobileprovision
           
           #cp $PP_PATH ~/Library/MobileDevice/Provisioning\ Profiles  
-          ls -l ~/Library/MobileDevice/Provisioning\ Profiles 
+          ls -lR ~/Library/MobileDevice
     
         
 
