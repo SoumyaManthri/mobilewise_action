@@ -35,7 +35,7 @@ jobs:
           echo -n "$PROVISIONING_CERTIFICATE_BASE64" | base64 --decode --output $PP_PATH
           mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
           cp $PP_PATH ~/Library/MobileDevice/Provisioning\ Profiles  
-          ls -R ~/Library/MobileDevice/Provisioning\ Profiles
+          ls -R ~/Library/MobileDevice
         
 
       - name: Install and set Flutter version
