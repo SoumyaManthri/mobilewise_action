@@ -70,6 +70,12 @@ jobs:
           ls -R
           ls -l
 
+      - name: Clean Xcode Project
+        run: xcodebuild clean -workspace ios/Runner.xcworkspace -scheme Runner -configuration Release
+
+      - name: Build and Resolve Swift Dependencies
+        run: xcodebuild -resolvePackageDependencies -workspace ios/Runner.xcworkspace -scheme Runner -configuration Release    
+
       - name: Build and export .ipa (Ad-Hoc)
         run: |
           xcodebuild -workspace ios/Runner.xcworkspace -scheme Runner -configuration Release -sdk iphoneos -destination 'generic/platform=iOS' -archivePath build-output/app.xcarchive clean archive FLUTTER_TARGET=lib/main_dev.dart
