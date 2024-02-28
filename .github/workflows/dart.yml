@@ -34,7 +34,8 @@ jobs:
           #PP_PATH=$RUNNER_TEMP/build_pp.mobileprovision
           echo "$PROVISIONING_CERTIFICATE_BASE64" | base64 --decode
           mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
-          echo -n "$PROVISIONING_CERTIFICATE_BASE64" | base64 --decode --output ~/Library/MobileDevice/Provisioning\ Profiles/Adhoc_Mobilewise.mobileprovision
+          echo "$PROVISIONING_CERTIFICATE_BASE64" | base64 --decode > ~/Library/MobileDevice/Provisioning\ Profiles/Adhoc_Mobilewise.mobileprovision
+          #echo -n "$PROVISIONING_CERTIFICATE_BASE64" | base64 --decode --output ~/Library/MobileDevice/Provisioning\ Profiles/Adhoc_Mobilewise.mobileprovision
           #grep -a 'UUID' -C 2 ~/Library/MobileDevice/Provisioning\ Profiles/Adhoc_Mobilewise.mobileprovision
           #cp $PP_PATH ~/Library/MobileDevice/Provisioning\ Profiles  
           ls -lR ~/Library/MobileDevice
