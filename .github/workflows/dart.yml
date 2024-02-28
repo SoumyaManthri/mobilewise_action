@@ -68,7 +68,7 @@ jobs:
 
       - name: Build and export .ipa (Ad-Hoc)
         run: |
-          xcodebuild -workspace ios/Runner.xcworkspace -scheme Runner -configuration Release -sdk iphoneos -destination 'generic/platform=iOS' -archivePath build-output/app.xcarchive PROVISIONING_PROFILE_SPECIFIER="Adhoc_Mobilewise" clean archive CODE_SIGN_IDENTITY="iPhone Distribution: Laxmiprasad Putta" FLUTTER_TARGET=lib/main_dev.dart
+          xcodebuild -workspace ios/Runner.xcworkspace -scheme Runner -configuration Release -sdk iphoneos -destination 'generic/platform=iOS' -archivePath build-output/app.xcarchive clean archive CODE_SIGN_IDENTITY="Apple Distribution: Laxmiprasad Putta" FLUTTER_TARGET=lib/main_dev.dart
           xcodebuild -exportArchive -archivePath build-output/app.xcarchive -exportPath build-output/ios -exportOptionsPlist ios/ExportOptions.plist
 
       - name: Run Flutter in Release Mode
