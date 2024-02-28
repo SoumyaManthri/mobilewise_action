@@ -1,16 +1,21 @@
-name: Flutter_iOS
+name: Flutter_iOS_DIV
 
 on:
-  push:
-    branches: [main]
+  workflow_dispatch:  # Triggered manually
+    branches: [ main ]
 
 jobs:
-  build_ios_distribution:
-    runs-on: macos-latest
+  build_ios_adhoc:
+    runs-on: macos-latest  # Run on a macOS virtual machine
 
     steps:
       - name: Checkout the code
         uses: actions/checkout@v2
+
+      - name: Create new branch
+        id: create_branch
+        run: |
+          git checkout -b new_branch
 
       - name: Clean Derived Data
         run: |
@@ -20,7 +25,7 @@ jobs:
         uses: apple-actions/import-codesign-certs@v1
         with:
           p12-file-base64: ${{ secrets.P12_BASE64 }}
-          p12-password: ${{ secrets.P12_PASSWORD }}
+          p12-password: ${{ secrets.P12_PASSWORD }}  
 
       - name: Install the provisioning profile (Distribution)
         env:
@@ -29,49 +34,70 @@ jobs:
           PP_PATH=$RUNNER_TEMP/build_pp.mobileprovision
           echo -n "$PROVISIONING_CERTIFICATE_BASE64" | base64 --decode --output $PP_PATH
           mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
-          cp $PP_PATH ~/Library/MobileDevice/Provisioning\ Profiles
+          cp $PP_PATH ~/Library/MobileDevice/Provisioning\ Profiles  
 
       - name: Install and set Flutter version
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: 3.16
+          flutter-version: '3.16'
+          channel: 'stable'
+          cache: true 
 
       - name: Restore packages
-        run: flutter pub get
+        run: |
+          flutter clean
+          flutter pub get
 
-      - name: Clean Xcode Project
-        run: xcodebuild clean -workspace ios/Runner.xcworkspace -scheme Runner -configuration Release
-
-      - name: Deintegrate CocoaPods and Reinstall
+      - name: Reinstall CocoaPods
         run: |
           cd ios
           pod deintegrate
-          rm Podfile
-          echo "platform :ios, '12.0'" > Podfile
-          echo "target 'Runner' do" >> Podfile
-          echo "  use_frameworks!" >> Podfile
-          echo "end" >> Podfile
           pod install
           cd ..
-
-      - name: Build resolve Swift dependencies
-        run: xcodebuild -resolvePackageDependencies -workspace ios/Runner.xcworkspace -scheme Runner -configuration Release
 
       - name: Print current working directory
         run: pwd
 
       - name: List contents of the directory
-        run: ls -ltr
-
-      - name: Build and Export .ipa (Distribution)
         run: |
-          xcrun xcodebuild -workspace ios/Runner.xcworkspace -configuration Release -scheme Runner VERBOSE_SCRIPT_LOGGING=YES COMPILER_INDEX_STORE_ENABLE=NO PROVISIONING_PROFILE_SPECIFIER='Adhoc_Mobilewise' FLUTTER_TARGET=lib/main_dev.dart        
-          xcodebuild -exportArchive -archivePath build-output/app.xcarchive -exportPath build-output/ios -exportOptionsPlist ios/ExportOptions.plist
-      - name: Run Flutter in Release Mode
-        run: flutter build ipa --release --target=lib/main_dev.dart
+          ls -l
+          echo "Flutter Root: ${{ env.FLUTTER_ROOT }}"
+          cd ${{ env.FLUTTER_ROOT }}
+          ls -R
+          ls -l
 
-      - name: Upload build artifacts (Distribution)
+      - name: Build and export .ipa (Ad-Hoc)
+        run: |
+          xcodebuild -workspace ios/Runner.xcworkspace -scheme Runner -configuration Release -sdk iphoneos -destination 'generic/platform=iOS' -archivePath build-output/app.xcarchive PROVISIONING_PROFILE_SPECIFIER="Adhoc_Mobilewise" clean archive CODE_SIGN_IDENTITY="iPhone Distribution: Laxmiprasad Putta" FLUTTER_TARGET=lib/main_dev.dart
+          xcodebuild -exportArchive -archivePath build-output/app.xcarchive -exportPath build-output/ios -exportOptionsPlist ios/ExportOptions.plist
+
+      - name: Run Flutter in Release Mode
+        run: flutter build ipa --no-codesign
+
+      - name: Upload build artifacts (Ad-Hoc)
         uses: actions/upload-artifact@v2
         with:
-          name: ios-build-distribution
+          name: ios-build-adhoc
           path: build-output/ios
+   
+
+      #- name: Build and export .ipa (Ad-Hoc)
+       # run: |
+        #  rm ios/Podfile.lock pubspec.lock
+         ## rm -rf ios/Pods ios/Runner.xcworkspace
+          #flutter build ipa --release --target=lib/main_dev.dart
+          #xcodebuild -exportArchive -archivePath build-output/app.xcarchive -exportPath build-output/ios -exportOptionsPlist ios/ExportOptions.plist
+          #xcodebuild -exportArchive -archivePath "build/ios/archive/Runner.xcarchive" -exportPath "build/ios/ipa" -exportOptionsPlist "ios/ExportOptions.plist"
+        
+
+      #- name: Upload IPA artifact
+       # uses: actions/upload-artifact@v2
+        #with:
+         # name: ios-ipa
+          #path: build/ios/ipa    
+
+      #- name: Upload build artifacts (Ad-Hoc)
+       # uses: actions/upload-artifact@v2
+        #with:
+         # name: ios-build-adhoc
+          #path: build-output/ios
