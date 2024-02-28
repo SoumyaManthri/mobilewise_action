@@ -31,11 +31,13 @@ jobs:
         env:
           PROVISIONING_CERTIFICATE_BASE64: ${{ secrets.ADHOC_MOBILEWISE }}
         run: |
-          PP_PATH=$RUNNER_TEMP/build_pp.mobileprovision
-          echo -n "$PROVISIONING_CERTIFICATE_BASE64" | base64 --decode --output $PP_PATH
+          #PP_PATH=$RUNNER_TEMP/build_pp.mobileprovision
           mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
-          cp $PP_PATH ~/Library/MobileDevice/Provisioning\ Profiles  
+          echo -n "$PROVISIONING_CERTIFICATE_BASE64" | base64 --decode --output ~/Library/MobileDevice/Provisioning\ Profiles\build_pp.mobileprovision
+          
+          #cp $PP_PATH ~/Library/MobileDevice/Provisioning\ Profiles  
           ls -R ~/Library/MobileDevice
+          cd jdghdhg
         
 
       - name: Install and set Flutter version
