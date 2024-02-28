@@ -12,5 +12,12 @@
          <true/>
          <key>teamID</key>
          <string>4RD8TSB5PJ</string>
+         <key>provisioningProfiles</key>
+             <dict>
+                 <key>com.vassar.mobilewise.flutter-mobilewise</key>
+                 <string>585702f6-e5cb-4bd0-9b7b-e41d7d3f30bd</string>
+             </dict>
+
+             <key>thinning</key>
          <string>&lt;none&gt;</string>
     </dict>
