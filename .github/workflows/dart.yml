@@ -12,6 +12,8 @@ jobs:
         xcode: ["15.0"]
 
     steps:
+      - name: Set up Xcode
+        uses: actions/setup-xcode@v2
       - name: Get Xcode Version
         run: |
           xcode_version=$(xcode-select -p | grep -oE 'Xcode[^/]+' | cut -f2 -d' ')
