@@ -9,6 +9,10 @@ jobs:
     runs-on: macos-latest  # Run on a macOS virtual machine
 
     steps:
+      - name: Get Xcode Version
+        run: |
+          xcode_version=$(xcode-select -p | grep -oE 'Xcode[^/]+' | cut -f2 -d' ')
+          echo "Xcode version: $xcode_version"
       - name: Checkout the code
         uses: actions/checkout@v2
 
