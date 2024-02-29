@@ -683,7 +683,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "com.vassar.mobilewise.flutter-mobilewise";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE_SPECIFIER = "";
+				PROVISIONING_PROFILE_SPECIFIER = Adhoc_Mobilewise;
 				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = Adhoc_Mobilewise;
 				SWIFT_OBJC_BRIDGING_HEADER = "Runner/Runner-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -714,7 +714,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "com.vassar.mobilewise.flutter-mobilewise";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE_SPECIFIER = "";
+				PROVISIONING_PROFILE_SPECIFIER = Adhoc_Mobilewise;
 				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = Adhoc_Mobilewise;
 				SWIFT_OBJC_BRIDGING_HEADER = "Runner/Runner-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
