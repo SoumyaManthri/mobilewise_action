@@ -39,13 +39,8 @@ jobs:
         env:
           PROVISIONING_CERTIFICATE_BASE64: ${{ secrets.IOS_NEWPROVISIONING }}
         run: |
-        
           mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
           echo "$PROVISIONING_CERTIFICATE_BASE64" | base64 --decode > ~/Library/MobileDevice/Provisioning\ Profiles/IOS_NEWPROVISIONING.mobileprovision
-          ls -lR ~/Library/MobileDevice
-
-    
-        
 
       - name: Install and set Flutter version
         uses: subosito/flutter-action@v2
