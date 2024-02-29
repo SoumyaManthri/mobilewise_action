@@ -86,11 +86,11 @@ jobs:
 
       - name: Build and Resolve Swift Dependencies
         run: xcodebuild -resolvePackageDependencies -workspace ios/Runner.xcworkspace -scheme Runner -configuration Release   
-      - name: Install Xcode Command Line Tools
-        run: xcode-select --install
+      - name: Print Xcode Environment Variables
+        run: | 
+          echo $PATH
+          xcode-select -p
 
-      - name: Verify Xcode Environment  # Optional for debugging
-        run: which xxcrun
 
 
       - name: Build and export .ipa (Ad-Hoc)
