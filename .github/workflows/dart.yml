@@ -47,7 +47,7 @@ jobs:
           ls -lR ~/Library/MobileDevice
 
           cat ~/Library/MobileDevice/Provisioning\ Profiles/Adhoc_Mobilewise.mobileprovision
-          cp ~/Library/MobileDevice/Provisioning\ Profiles/ /Library/MobileDevice/Provisioning\ Profiles/
+          cp ~/Library/MobileDevice/ /Library/MobileDevice/
 
     
         
