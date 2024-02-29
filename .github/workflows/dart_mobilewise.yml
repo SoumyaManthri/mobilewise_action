@@ -105,18 +105,26 @@ jobs:
       - name: Build and export .ipa (Ad-Hoc)
         run: |
           xcrun xcodebuild -workspace ios/Runner.xcworkspace -configuration Release -scheme Runner VERBOSE_SCRIPT_LOGGING=YES COMPILER_INDEX_STORE_ENABLE=NO -allowProvisioningUpdates
-          cd ~/Library/Developer/Xcode/Archives
-          ls
-          xcodebuild -exportArchive -archivePath ~/Library/Developer/Xcode/Archives/app.xcarchive -exportPath build-output/ios -exportOptionsPlist ios/ExportOptions.plist
+  
+          #xcodebuild -exportArchive -archivePath ~/Library/Developer/Xcode/Archives/app.xcarchive -exportPath build-output/ios -exportOptionsPlist ios/ExportOptions.plist
 
-      - name: Run Flutter in Release Mode
-        run: flutter build ipa --no-codesign
+      - name: Package IPA
+        run: xcrun -sdk iphoneos PackageApplication -v Runner.app -o Runner.ipa
 
-      - name: Upload build artifacts (Ad-Hoc)
+      - name: Upload IPA artifact
         uses: actions/upload-artifact@v2
         with:
-          name: ios-build-adhoc
-          path: build-output/ios
+          name: runner-ipa
+          path: Runner.ipa    
+
+      #- name: Run Flutter in Release Mode
+       # run: flutter build ipa --no-codesign
+
+      #- name: Upload build artifacts (Ad-Hoc)
+       # uses: actions/upload-artifact@v2
+        #with:
+         # name: ios-build-adhoc
+          #path: build-output/ios
    
 
       #- name: Build and export .ipa (Ad-Hoc)
