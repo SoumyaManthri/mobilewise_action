@@ -39,16 +39,10 @@ jobs:
         env:
           PROVISIONING_CERTIFICATE_BASE64: ${{ secrets.IOS_NEWPROVISIONING }}
         run: |
-          #PP_PATH=$RUNNER_TEMP/build_pp.mobileprovision
-          #echo ${{ secrets.IOS_NEWPROVISIONING }} | base64 --decode
+        
           mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
           echo "$PROVISIONING_CERTIFICATE_BASE64" | base64 --decode > ~/Library/MobileDevice/Provisioning\ Profiles/IOS_NEWPROVISIONING.mobileprovision
-          #echo -n "$PROVISIONING_CERTIFICATE_BASE64" | base64 --decode --output ~/Library/MobileDevice/Provisioning\ Profiles/IOS_NEWPROVISIONING.mobileprovision
-          #grep -a 'UUID' -C 2 ~/Library/MobileDevice/Provisioning\ Profiles/IOS_NEWPROVISIONING.mobileprovision
-          #cp $PP_PATH ~/Library/MobileDevice/Provisioning\ Profiles  
           ls -lR ~/Library/MobileDevice
-
-          #cat ~/Library/MobileDevice/Provisioning\ Profiles/IOS_NEWPROVISIONING.mobileprovision
 
     
         
