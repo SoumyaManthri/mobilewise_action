@@ -7,13 +7,12 @@ on:
 jobs:
   build_ios_adhoc:
     runs-on: macos-latest  # Run on a macOS virtual machine
-    strategy:
-      matrix:
-        xcode: ["15.0"]
+   
 
     steps:
-      - name: Set up Xcode
-        uses: actions/setup-xcode@v2
+      - uses: maxim-lobanov/setup-xcode@v1
+        with:
+         xcode-version: latest-stable
       - name: Get Xcode Version
         run: |
           xcode_version=$(xcode-select -p | grep -oE 'Xcode[^/]+' | cut -f2 -d' ')
