@@ -91,7 +91,7 @@ jobs:
 
       - name: Clean Xcode Project
         run: |
-          xcodebuild clean -workspace ios/Runner.xcodeproj -scheme Runner -configuration Release
+          xcodebuild clean -project ios/Runner.xcodeproj
           xcodebuild clean -workspace ios/Runner.xcworkspace -scheme Runner -configuration Release
 
       - name: Build and Resolve Swift Dependencies
