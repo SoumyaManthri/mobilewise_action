@@ -27,11 +27,11 @@ jobs:
           p12-file-base64: ${{ secrets.IOS_DISTRIBUTION }}
           p12-password: ${{ secrets.IOS_PASSWORD }}  
 
-      - name: Print encoded secret
-        run: echo ${{ secrets.IOS_NEWPROVISIONING }}
+     # - name: Print encoded secret
+       # run: echo ${{ secrets.IOS_NEWPROVISIONING }}
 
-      - name: Decode and print secret
-        run: echo ${{ secrets.ADHOC_MOBILEWISE }} | base64 --decode          
+      #- name: Decode and print secret
+       # run: echo ${{ secrets.ADHOC_MOBILEWISE }} | base64 --decode          
 
       #- name: Install the provisioning profile (Distribution)
         #env:
