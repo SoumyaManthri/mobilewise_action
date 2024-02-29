@@ -7,6 +7,9 @@ on:
 jobs:
   build_ios_adhoc:
     runs-on: macos-latest  # Run on a macOS virtual machine
+    strategy:
+      matrix:
+        xcode: ["15.0"]
 
     steps:
       - name: Get Xcode Version
