@@ -108,14 +108,28 @@ jobs:
   
           #xcodebuild -exportArchive -archivePath ~/Library/Developer/Xcode/Archives/app.xcarchive -exportPath build-output/ios -exportOptionsPlist ios/ExportOptions.plist
 
-      - name: Package IPA
-        run: xcrun -sdk iphoneos PackageApplication -v Runner.app -o Runner.ipa
+      - name: Create IPA
+        run: |
+          pushd build
+          mkdir Payload
+          cp -R "/Users/runner/Library/Developer/Xcode/DerivedData/Runner-dyvlnrsznwdmcqczwfxcopocvcws/Build/Products/Release-iphoneos/Runner.app" Payload
+          zip -qyr YourApp.ipa Payload
+          rm -r Payload
+          popd
 
-      - name: Upload IPA artifact
+      - name: Upload IPA as artifact
         uses: actions/upload-artifact@v2
         with:
-          name: runner-ipa
-          path: Runner.ipa    
+          name: ios-ipa
+          path: build/YourApp.ipa
+      #- name: Package IPA
+       # run: xcrun -sdk iphoneos PackageApplication -v Runner.app -o Runner.ipa
+
+      #- name: Upload IPA artifact
+        #uses: actions/upload-artifact@v2
+        #with:
+          #name: runner-ipa
+          #path: Runner.ipa    
 
       #- name: Run Flutter in Release Mode
        # run: flutter build ipa --no-codesign
