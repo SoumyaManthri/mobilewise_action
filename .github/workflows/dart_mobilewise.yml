@@ -28,7 +28,7 @@ jobs:
           p12-password: ${{ secrets.IOS_PASSWORD }}  
 
       - name: Print encoded secret
-        run: echo ${{ secrets.ADHOC_MOBILEWISE }}
+        run: echo ${{ secrets.IOS_NEWPROVISIONING }}
 
       - name: Decode and print secret
         run: echo ${{ secrets.ADHOC_MOBILEWISE }} | base64 --decode          
@@ -52,10 +52,10 @@ jobs:
         
       - name: Install Provisioning Profile
         env:
-          PROVISIONING_PROFILE_BASE64: ${{ secrets.ADHOC_MOBILEWISE }} 
+          PROVISIONING_PROFILE_BASE64: ${{ secrets.IOS_NEWPROVISIONING }} 
         run: |
           # Create temporary files for certificates and profiles (optional)
-          PP_PATH=$RUNNER_TEMP/ADHOC_MOBILEWISE.mobileprovision 
+          PP_PATH=$RUNNER_TEMP/IOS_NEWPROVISIONING.mobileprovision 
           echo -n "$PROVISIONING_PROFILE_BASE64" | base64 --decode --output $PP_PATH
           mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
           cp $PP_PATH ~/Library/MobileDevice/Provisioning\ Profiles
