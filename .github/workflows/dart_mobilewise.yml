@@ -85,7 +85,13 @@ jobs:
         run: xcodebuild clean -workspace ios/Runner.xcworkspace -scheme Runner -configuration Release
 
       - name: Build and Resolve Swift Dependencies
-        run: xcodebuild -resolvePackageDependencies -workspace ios/Runner.xcworkspace -scheme Runner -configuration Release    
+        run: xcodebuild -resolvePackageDependencies -workspace ios/Runner.xcworkspace -scheme Runner -configuration Release   
+      - name: Install Xcode Command Line Tools
+        run: xcode-select --install
+
+      - name: Verify Xcode Environment  # Optional for debugging
+        run: which xxcrun
+
 
       - name: Build and export .ipa (Ad-Hoc)
         run: |
