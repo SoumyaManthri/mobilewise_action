@@ -1,1 +1,124 @@
+name: Flutter_iOS_DIV
 
+on:
+  workflow_dispatch:  # Triggered manually
+    branches: [ main ]
+
+jobs:
+  build_ios_adhoc:
+    runs-on: macos-latest  # Run on a macOS virtual machine
+
+    steps:
+      - name: Checkout the code
+        uses: actions/checkout@v2
+
+      - name: Create new branch
+        id: create_branch
+        run: |
+          git checkout -b new_branch
+
+      - name: Clean Derived Data
+        run: |
+          rm -rf ~/Library/Developer/Xcode/DerivedData
+
+      - name: Install Apple Certificate (Distribution)
+        uses: apple-actions/import-codesign-certs@v1
+        with:
+          p12-file-base64: ${{ secrets.P12_BASE64 }}
+          p12-password: ${{ secrets.P12_PASSWORD }}  
+
+      - name: Print encoded secret
+        run: echo ${{ secrets.ADHOC_MOBILEWISE }}
+
+      - name: Decode and print secret
+        run: echo ${{ secrets.ADHOC_MOBILEWISE }} | base64 --decode          
+
+      - name: Install the provisioning profile (Distribution)
+        env:
+          PROVISIONING_CERTIFICATE_BASE64: ${{ secrets.ADHOC_MOBILEWISE }}
+        run: |
+          #PP_PATH=$RUNNER_TEMP/build_pp.mobileprovision
+          echo ${{ secrets.ADHOC_MOBILEWISE }} | base64 --decode
+          mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
+          echo "$PROVISIONING_CERTIFICATE_BASE64" | base64 --decode > ~/Library/MobileDevice/Provisioning\ Profiles/Adhoc_Mobilewise.mobileprovision
+          #echo -n "$PROVISIONING_CERTIFICATE_BASE64" | base64 --decode --output ~/Library/MobileDevice/Provisioning\ Profiles/Adhoc_Mobilewise.mobileprovision
+          #grep -a 'UUID' -C 2 ~/Library/MobileDevice/Provisioning\ Profiles/Adhoc_Mobilewise.mobileprovision
+          #cp $PP_PATH ~/Library/MobileDevice/Provisioning\ Profiles  
+          ls -lR ~/Library/MobileDevice
+
+          cat ~/Library/MobileDevice/Provisioning\ Profiles/Adhoc_Mobilewise.mobileprovision
+
+    
+        
+
+      - name: Install and set Flutter version
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.16'
+          channel: 'stable'
+          cache: true 
+
+      - name: Restore packages
+        run: |
+          flutter clean
+          flutter pub get
+
+      - name: Reinstall CocoaPods
+        run: |
+          cd ios
+          pod deintegrate
+          pod install
+          cd ..
+
+      - name: Print current working directory
+        run: pwd
+
+      - name: List contents of the directory
+        run: |
+          ls -l
+          echo "Flutter Root: ${{ env.FLUTTER_ROOT }}"
+          cd ${{ env.FLUTTER_ROOT }}
+          ls -R
+          ls -l
+
+      - name: Clean Xcode Project
+        run: xcodebuild clean -workspace ios/Runner.xcworkspace -scheme Runner -configuration Release
+
+      - name: Build and Resolve Swift Dependencies
+        run: xcodebuild -resolvePackageDependencies -workspace ios/Runner.xcworkspace -scheme Runner -configuration Release    
+
+      - name: Build and export .ipa (Ad-Hoc)
+        run: |
+          xxcrun xcodebuild -workspace ios/Runner.xcworkspace -configuration Debug -scheme dev VERBOSE_SCRIPT_LOGGING=YES COMPILER_INDEX_STORE_ENABLE=NO EXCLUDED_ARCHS=arm64 -allowProvisioningUpdates
+          xcodebuild -exportArchive -archivePath build-output/app.xcarchive -exportPath build-output/ios -exportOptionsPlist ios/ExportOptions.plist
+
+      - name: Run Flutter in Release Mode
+        run: flutter build ipa --no-codesign
+
+      - name: Upload build artifacts (Ad-Hoc)
+        uses: actions/upload-artifact@v2
+        with:
+          name: ios-build-adhoc
+          path: build-output/ios
+   
+
+      #- name: Build and export .ipa (Ad-Hoc)
+       # run: |
+        #  rm ios/Podfile.lock pubspec.lock
+         ## rm -rf ios/Pods ios/Runner.xcworkspace
+          #flutter build ipa --release --target=lib/main_dev.dart
+          #xcodebuild -exportArchive -archivePath build-output/app.xcarchive -exportPath build-output/ios -exportOptionsPlist ios/ExportOptions.plist
+          #xcodebuild -exportArchive -archivePath "build/ios/archive/Runner.xcarchive" -exportPath "build/ios/ipa" -exportOptionsPlist "ios/ExportOptions.plist"
+        
+
+      #- name: Upload IPA artifact
+       # uses: actions/upload-artifact@v2
+        #with:
+         # name: ios-ipa
+          #path: build/ios/ipa    
+
+      #- name: Upload build artifacts (Ad-Hoc)
+       # uses: actions/upload-artifact@v2
+        #with:
+         # name: ios-build-adhoc
+          #path: build-output/ios
