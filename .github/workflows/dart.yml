@@ -32,8 +32,8 @@ jobs:
       - name: Install Apple Certificate (Distribution)
         uses: apple-actions/import-codesign-certs@v1
         with:
-          p12-file-base64: ${{ secrets.P12_BASE64 }}
-          p12-password: ${{ secrets.P12_PASSWORD }}          
+          p12-file-base64: ${{ secrets.IOS_DISTRIBUTION }}
+          p12-password: ${{ secrets.IOS_PASSWORD }}          
 
       - name: Install the provisioning profile (Distribution)
         env:
@@ -42,7 +42,7 @@ jobs:
           #PP_PATH=$RUNNER_TEMP/build_pp.mobileprovision
           #echo ${{ secrets.IOS_NEWPROVISIONING }} | base64 --decode
           mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
-          echo "$PROVISIONING_CERTIFICATE_BASE64" | base64 --decode > ~/Library/MobileDevice/Provisioning\ Profiles/Adhoc_Mobilewise_ios.mobileprovision
+          echo "$PROVISIONING_CERTIFICATE_BASE64" | base64 --decode > ~/Library/MobileDevice/Provisioning\ Profiles/IOS_NEWPROVISIONING.mobileprovision
           #echo -n "$PROVISIONING_CERTIFICATE_BASE64" | base64 --decode --output ~/Library/MobileDevice/Provisioning\ Profiles/IOS_NEWPROVISIONING.mobileprovision
           #grep -a 'UUID' -C 2 ~/Library/MobileDevice/Provisioning\ Profiles/IOS_NEWPROVISIONING.mobileprovision
           #cp $PP_PATH ~/Library/MobileDevice/Provisioning\ Profiles  
