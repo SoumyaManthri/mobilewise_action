@@ -90,7 +90,9 @@ jobs:
           ls -l
 
       - name: Clean Xcode Project
-        run: xcodebuild clean -workspace ios/Runner.xcworkspace -scheme Runner -configuration Release
+        run: |
+          xcodebuild clean -workspace ios/Runner.xcodeproj -scheme Runner -configuration Release
+          xcodebuild clean -workspace ios/Runner.xcworkspace -scheme Runner -configuration Release
 
       - name: Build and Resolve Swift Dependencies
         run: xcodebuild -resolvePackageDependencies -workspace ios/Runner.xcworkspace -scheme Runner -configuration Release    
