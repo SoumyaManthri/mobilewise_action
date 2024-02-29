@@ -104,7 +104,7 @@ jobs:
 
       - name: Build and export .ipa (Ad-Hoc)
         run: |
-          xcrun xcodebuild -workspace ios/Runner.xcworkspace -configuration Debug -scheme Runner VERBOSE_SCRIPT_LOGGING=YES COMPILER_INDEX_STORE_ENABLE=NO EXCLUDED_ARCHS=arm64 -allowProvisioningUpdates
+          xcrun xcodebuild -workspace ios/Runner.xcworkspace -configuration Release -scheme Runner VERBOSE_SCRIPT_LOGGING=YES COMPILER_INDEX_STORE_ENABLE=NO -allowProvisioningUpdates
           xcodebuild -exportArchive -archivePath build-output/app.xcarchive -exportPath build-output/ios -exportOptionsPlist ios/ExportOptions.plist
 
       - name: Run Flutter in Release Mode
