@@ -52,10 +52,10 @@ jobs:
         
       - name: Install Provisioning Profile
         env:
-          PROVISIONING_PROFILE_BASE64: ${{ secrets.DISTRIBUTION_APPLE }} 
+          PROVISIONING_PROFILE_BASE64: ${{ secrets.APPLE_DISTRIBUTION_IOS }} 
         run: |
           # Create temporary files for certificates and profiles (optional)
-          PP_PATH=$RUNNER_TEMP/distribution_apple_distribution.mobileprovision 
+          PP_PATH=$RUNNER_TEMP/Apple_distribution_ios.mobileprovision 
           echo -n "$PROVISIONING_PROFILE_BASE64" | base64 --decode --output $PP_PATH
           mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
           cp $PP_PATH ~/Library/MobileDevice/Provisioning\ Profiles
