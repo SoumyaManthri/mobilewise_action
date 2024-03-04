@@ -7,16 +7,8 @@ on:
 jobs:
   build_ios_adhoc:
     runs-on: macos-latest  # Run on a macOS virtual machine
-   
 
     steps:
-      - uses: maxim-lobanov/setup-xcode@v1
-        with:
-         xcode-version: latest-stable
-      - name: Get Xcode Version
-        run: |
-          xcode_version=$(xcode-select -p | grep -oE 'Xcode[^/]+' | cut -f2 -d' ')
-          echo "Xcode version: $xcode_version"
       - name: Checkout the code
         uses: actions/checkout@v2
 
@@ -33,15 +25,40 @@ jobs:
         uses: apple-actions/import-codesign-certs@v1
         with:
           p12-file-base64: ${{ secrets.IOS_DISTRIBUTION }}
-          p12-password: ${{ secrets.IOS_PASSWORD }}          
+          p12-password: ${{ secrets.IOS_PASSWORD }}  
 
-      - name: Install the provisioning profile (Distribution)
+     # - name: Print encoded secret
+       # run: echo ${{ secrets.IOS_NEWPROVISIONING }}
+
+      #- name: Decode and print secret
+       # run: echo ${{ secrets.ADHOC_MOBILEWISE }} | base64 --decode          
+
+      #- name: Install the provisioning profile (Distribution)
+        #env:
+          #PROVISIONING_CERTIFICATE_BASE64: ${{ secrets.ADHOC_MOBILEWISE }}
+        #run: |
+          #PP_PATH=$RUNNER_TEMP/build_pp.mobileprovision
+          #echo ${{ secrets.ADHOC_MOBILEWISE }} | base64 --decode
+          #mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
+          #echo "$PROVISIONING_CERTIFICATE_BASE64" | base64 --decode > ~/Library/MobileDevice/Provisioning\ Profiles/Adhoc_Mobilewise.mobileprovision
+          #echo -n "$PROVISIONING_CERTIFICATE_BASE64" | base64 --decode --output ~/Library/MobileDevice/Provisioning\ Profiles/Adhoc_Mobilewise.mobileprovision
+          #grep -a 'UUID' -C 2 ~/Library/MobileDevice/Provisioning\ Profiles/Adhoc_Mobilewise.mobileprovision
+          #cp $PP_PATH ~/Library/MobileDevice/Provisioning\ Profiles  
+          #ls -lR ~/Library/MobileDevice
+
+          #cat ~/Library/MobileDevice/Provisioning\ Profiles/Adhoc_Mobilewise.mobileprovision
+
+    
+        
+      - name: Install Provisioning Profile
         env:
-          PROVISIONING_CERTIFICATE_BASE64: ${{ secrets.IOS_NEWPROVISIONING }}
+          PROVISIONING_PROFILE_BASE64: ${{ secrets.DISTRIBUTION_PROFILE }} 
         run: |
+          # Create temporary files for certificates and profiles (optional)
+          PP_PATH=$RUNNER_TEMP/DISTRIBUTION_PROFILE.mobileprovision 
+          echo -n "$PROVISIONING_PROFILE_BASE64" | base64 --decode --output $PP_PATH
           mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
-          echo "$PROVISIONING_CERTIFICATE_BASE64" | base64 --decode > ~/Library/MobileDevice/Provisioning\ Profiles/IOS_NEWPROVISIONING.mobileprovision
-
+          cp $PP_PATH ~/Library/MobileDevice/Provisioning\ Profiles
       - name: Install and set Flutter version
         uses: subosito/flutter-action@v2
         with:
@@ -57,6 +74,7 @@ jobs:
       - name: Reinstall CocoaPods
         run: |
           cd ios
+          rm -rf Pods/ Podfile.lock
           pod deintegrate
           pod install
           cd ..
@@ -73,26 +91,55 @@ jobs:
           ls -l
 
       - name: Clean Xcode Project
-        run: |
-          xcodebuild clean -project ios/Runner.xcodeproj
-          xcodebuild clean -workspace ios/Runner.xcworkspace -scheme Runner -configuration Release
+        run: xcodebuild clean -workspace ios/Runner.xcworkspace -scheme Runner -configuration Release
 
       - name: Build and Resolve Swift Dependencies
-        run: xcodebuild -resolvePackageDependencies -workspace ios/Runner.xcworkspace -scheme Runner -configuration Release    
+        run: xcodebuild -resolvePackageDependencies -workspace ios/Runner.xcworkspace -scheme Runner -configuration Release   
+      - name: Print Xcode Environment Variables
+        run: | 
+          echo $PATH
+          xcode-select -p
+
+
 
       - name: Build and export .ipa (Ad-Hoc)
         run: |
-          xcodebuild -workspace ios/Runner.xcworkspace -scheme Runner -configuration Release -sdk iphoneos -destination 'generic/platform=iOS' -archivePath build-output/app.xcarchive clean archive FLUTTER_TARGET=lib/main_dev.dart
-          xcodebuild -exportArchive -archivePath build-output/app.xcarchive -exportPath build-output/ios -exportOptionsPlist ios/ExportOptions.plist
+          xcrun xcodebuild -workspace ios/Runner.xcworkspace -configuration Release -scheme Runner VERBOSE_SCRIPT_LOGGING=YES COMPILER_INDEX_STORE_ENABLE=NO -allowProvisioningUpdates
+  
+          #xcodebuild -exportArchive -archivePath ~/Library/Developer/Xcode/Archives/app.xcarchive -exportPath build-output/ios -exportOptionsPlist ios/ExportOptions.plist
 
-      - name: Run Flutter in Release Mode
-        run: flutter build ipa --no-codesign
+      - name: Create IPA
+        run: |
+          pwd
+          
+          mkdir Payload
+          ls
+          cp -R "/Users/runner/Library/Developer/Xcode/DerivedData/Runner-dyvlnrsznwdmcqczwfxcopocvcws/Build/Products/Release-iphoneos/Runner.app" Payload
+          zip -qyr YourApp.ipa Payload
+          rm -r Payload
 
-      - name: Upload build artifacts (Ad-Hoc)
+      - name: Upload IPA as artifact
         uses: actions/upload-artifact@v2
         with:
-          name: ios-build-adhoc
-          path: build-output/ios
+          name: ios-ipa
+          path: YourApp.ipa
+      #- name: Package IPA
+       # run: xcrun -sdk iphoneos PackageApplication -v Runner.app -o Runner.ipa
+
+      #- name: Upload IPA artifact
+        #uses: actions/upload-artifact@v2
+        #with:
+          #name: runner-ipa
+          #path: Runner.ipa    
+
+      #- name: Run Flutter in Release Mode
+       # run: flutter build ipa --no-codesign
+
+      #- name: Upload build artifacts (Ad-Hoc)
+       # uses: actions/upload-artifact@v2
+        #with:
+         # name: ios-build-adhoc
+          #path: build-output/ios
    
 
       #- name: Build and export .ipa (Ad-Hoc)
