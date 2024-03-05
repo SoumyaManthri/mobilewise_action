@@ -85,9 +85,13 @@ jobs:
           xcrun xcodebuild -workspace ios/Runner.xcworkspace -scheme Runner -configuration Release -archivePath $RUNNER_TEMP/app.xcarchive archive
           xcrun xcodebuild -exportArchive -archivePath $RUNNER_TEMP/app.xcarchive -exportOptionsPlist ios/ExportOptions.plist -exportPath $RUNNER_TEMP
 
+      - name: List contents of the directory
+        run: |
+          ls -l $RUNNER_TEMP
+
       - name: Upload IPA as artifact
         uses: actions/upload-artifact@v2
         with:
           name: ios-ipa
-          path: $RUNNER_TEMP/cicd_ios.ipa      
- 
+          path: $RUNNER_TEMP/cicd_ios.ipa
+
