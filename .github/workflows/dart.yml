@@ -91,9 +91,10 @@ jobs:
       - name: Create IPA
         run: |
           cd $RUNNER_TEMP
-          ls "/Users/runner/Library/Developer/Xcode/DerivedData/Runner-dyvlnrsznwdmcqczwfxcopocvcws/Build/Intermediates.noindex/ArchiveIntermediates/Runner/InstallationBuildProductsLocation/Applications/"
+          #ls "/Users/runner/Library/Developer/Xcode/DerivedData/Runner-dyvlnrsznwdmcqczwfxcopocvcws/Build/Intermediates.noindex/ArchiveIntermediates/Runner/InstallationBuildProductsLocation/Applications/"
           mkdir Payload
-          cp -R "/Users/runner/Library/Developer/Xcode/DerivedData/Runner-dyvlnrsznwdmcqczwfxcopocvcws/Build/Intermediates.noindex/ArchiveIntermediates/Runner/InstallationBuildProductsLocation/Applications/Runner.app" Payload
+          cp -R Runner.xcarchive/Products/Applications/Runner.app Payload
+          #cp -R "/Users/runner/Library/Developer/Xcode/DerivedData/Runner-dyvlnrsznwdmcqczwfxcopocvcws/Build/Intermediates.noindex/ArchiveIntermediates/Runner/InstallationBuildProductsLocation/Applications/Runner.app" Payload
           zip -qyr YourApp.ipa Payload
           rm -r Payload
 
