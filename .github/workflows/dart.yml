@@ -1,4 +1,4 @@
-name: Flutter_iOS_DIV
+name: Flutter_iOS_DISTRIBUTION
 
 on:
   workflow_dispatch:  # Triggered manually
