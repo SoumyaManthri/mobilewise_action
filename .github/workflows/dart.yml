@@ -91,11 +91,12 @@ jobs:
       - name: Create IPA
         run: |
           cd $RUNNER_TEMP
+          ls "/Users/runner/Library/Developer/Xcode/DerivedData/Runner-dyvlnrsznwdmcqczwfxcopocvcws/Build/Intermediates.noindex/ArchiveIntermediates/Runner/InstallationBuildProductsLocation/Applications/"
           mkdir Payload
-          ls
           cp -R "/Users/runner/Library/Developer/Xcode/DerivedData/Runner-dyvlnrsznwdmcqczwfxcopocvcws/Build/Intermediates.noindex/ArchiveIntermediates/Runner/InstallationBuildProductsLocation/Applications/Runner.app" Payload
           zip -qyr YourApp.ipa Payload
           rm -r Payload
+
 
       - name: Upload IPA as artifact
         uses: actions/upload-artifact@v2
