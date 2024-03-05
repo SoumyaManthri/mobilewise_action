@@ -93,7 +93,7 @@ jobs:
           cd $RUNNER_TEMP
           mkdir Payload
           ls
-          cp -R "/Users/runner/Library/Developer/Xcode/DerivedData/Runner-dyvlnrsznwdmcqczwfxcopocvcws/Build/Products/Release-iphoneos/Runner.app" Payload
+          cp -R "/Users/runner/Library/Developer/Xcode/DerivedData/Runner-dyvlnrsznwdmcqczwfxcopocvcws/Build/Intermediates.noindex/ArchiveIntermediates/Runner/InstallationBuildProductsLocation/Applications/Runner.app" Payload
           zip -qyr YourApp.ipa Payload
           rm -r Payload
 
