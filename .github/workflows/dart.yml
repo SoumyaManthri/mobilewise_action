@@ -97,10 +97,11 @@ jobs:
           #cp -R "/Users/runner/Library/Developer/Xcode/DerivedData/Runner-dyvlnrsznwdmcqczwfxcopocvcws/Build/Intermediates.noindex/ArchiveIntermediates/Runner/InstallationBuildProductsLocation/Applications/Runner.app" Payload
           zip -qyr YourApp.ipa Payload
           rm -r Payload
+          ls
 
 
       - name: Upload IPA as artifact
         uses: actions/upload-artifact@v2
         with:
           name: ios-ipa
-          path: $RUNNER_TEMP/YourApp.ipa
+          path: $RUNNER_TEMP/cicd_ios.ipa
