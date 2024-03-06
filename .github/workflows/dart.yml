@@ -96,5 +96,5 @@ jobs:
         with:
           name: ios-ipa
           path: $RUNNER_TEMP/cicd_ios.ipa
-          if-no-files-found: error
+          
 
