@@ -79,7 +79,7 @@ jobs:
           xcode-select -p
       - name: Build and Archive App
         run: |
-          xcodebuild -workspace ios/Runner.xcworkspace -scheme runner -configuration Release-Runner DEVELOPMENT_TEAM=4RD8TSB5PJ -sdk 'iphoneos' -destination 'generic/platform=iOS' -archivePath build-output/app.xcarchive PROVISIONING_PROFILE_SPECIFIER="Apple_distribution_ios" clean archive CODE_SIGN_IDENTITY="iOS Distribution"
+          xcodebuild -workspace ios/Runner.xcworkspace -scheme Runner -configuration Release-Runner DEVELOPMENT_TEAM=4RD8TSB5PJ -sdk 'iphoneos' -destination 'generic/platform=iOS' -archivePath build-output/app.xcarchive PROVISIONING_PROFILE_SPECIFIER="Apple_distribution_ios" clean archive CODE_SIGN_IDENTITY="iOS Distribution"
 
       - name:  Export IPA  
         run: |
