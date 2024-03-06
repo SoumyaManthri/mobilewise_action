@@ -87,7 +87,7 @@ jobs:
         
           xcrun xcodebuild -workspace ios/Runner.xcworkspace -scheme Runner -configuration Release -archivePath IPA/app.xcarchive archive
           xcrun xcodebuild -exportArchive -archivePath IPA/app.xcarchive -exportOptionsPlist ios/ExportOptions.plist -exportPath IPA/mobi.ipa
-          cd IPA
+          #cd IPA
 
           mkdir Payload
           ls
@@ -105,4 +105,4 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: ios-ipa
-          path: IPA/YourApp.ipa
+          path: YourApp.ipa
