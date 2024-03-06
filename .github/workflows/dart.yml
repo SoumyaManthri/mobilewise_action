@@ -82,7 +82,7 @@ jobs:
 
       - name: Build and export .ipa (Ad-Hoc)
         run: |
-          xcrun xcodebuild -workspace ios/Runner.xcworkspace -scheme Runner -configuration Release -archivePath $RUNNER_TEMP/app.xcarchive -exportOptionsPlist ios/ExportOptions.plist -exportPath $RUNNER_TEMP/cicd_ios.ipa -verbose 2>&1 | tee xcodebuild.log 
+          xcrun xcodebuild -workspace ios/Runner.xcworkspace -scheme Runner -configuration Release -archivePath $RUNNER_TEMP/app.xcarchive -exportOptionsPlist ios/ExportOptions.plist -exportPath $RUNNER_TEMP/cicd_ios.ipa -exportArchive -verbose 2>&1 | tee xcodebuild.log 
           #xcrun xcodebuild -workspace ios/Runner.xcworkspace -scheme Runner -configuration Release -archivePath $RUNNER_TEMP/app.xcarchive archive
           #xcrun xcodebuild -exportArchive -archivePath $RUNNER_TEMP/app.xcarchive -exportOptionsPlist ios/ExportOptions.plist -exportPath $RUNNER_TEMP/cicd_ios.ipa 
 
