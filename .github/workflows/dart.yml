@@ -88,6 +88,8 @@ jobs:
       - name: List contents of the directory
         run: |
           ls -l $RUNNER_TEMP
+      - name: Delay before uploading artifact
+        run: sleep 10
 
       - name: Upload IPA as artifact
         uses: actions/upload-artifact@v2
