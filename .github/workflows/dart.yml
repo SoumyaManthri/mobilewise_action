@@ -84,25 +84,20 @@ jobs:
 
       - name: Build and export .ipa (Ad-Hoc)
         run: |
-        
           xcrun xcodebuild -workspace ios/Runner.xcworkspace -scheme Runner -configuration Release -archivePath IPA/app.xcarchive archive
           xcrun xcodebuild -exportArchive -archivePath IPA/app.xcarchive -exportOptionsPlist ios/ExportOptions.plist -exportPath IPA/mobi.ipa
-          #cd IPA
-
+          cd IPA
           mkdir Payload
-          ls
-          cp -R "/Users/runner/Library/Developer/Xcode/DerivedData/Runner-dyvlnrsznwdmcqczwfxcopocvcws/Build/Intermediates.noindex/ArchiveIntermediates/Runner/InstallationBuildProductsLocation/Applications/Runner.app" Payload
-          zip -qyr YourApp.ipa Payload
+          cp -R app.xcarchive/Products/Applications/Runner.app Payload
+          zip -qyr mobi.ipa Payload
           rm -r Payload
-
 
       - name: List contents of the IPA directory
         run: |
-          cd "/Users/runner/Library/Developer/Xcode/DerivedData/Runner-dyvlnrsznwdmcqczwfxcopocvcws
-          ls -R
+          ls -R IPA
 
       - name: Upload IPA as artifact
         uses: actions/upload-artifact@v2
         with:
           name: ios-ipa
-          path: YourApp.ipa
+          path: IPA/mobi.ipa
