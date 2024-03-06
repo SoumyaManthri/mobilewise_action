@@ -79,12 +79,6 @@ jobs:
           echo $PATH
           xcode-select -p
 
-          
-      - name: Build Flutter iOS app
-        run: flutter build ios --no-codesign --target lib/main_dev.dart
-
-
-
       - name: Create IPA directory in root
         run: mkdir -p IPA
 
@@ -92,7 +86,10 @@ jobs:
         run: |
           xcrun xcodebuild -workspace ios/Runner.xcworkspace -scheme Runner -configuration Release -archivePath IPA/app.xcarchive archive
           xcrun xcodebuild -exportArchive -archivePath IPA/app.xcarchive -exportOptionsPlist ios/ExportOptions.plist -exportPath IPA/cicd_ios.ipa 
-
+      - name: List contents of the directory
+        run: |
+          cd IPA
+          ls -l 
       - name: Upload IPA as artifact
         uses: actions/upload-artifact@v2
         with:
