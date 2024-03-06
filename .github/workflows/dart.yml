@@ -95,5 +95,5 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: ios-ipa
-          path: $RUNNER_TEMP/cicd_ios.ipa
+          path: Users/runner/work/_temp/cicd_ios.ipa
 
