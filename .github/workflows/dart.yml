@@ -1,12 +1,12 @@
 name: Flutter_iOS_DISTRIBUTION
 
 on:
-  workflow_dispatch:  # Triggered manually
-    branches:  [ main ]
+  workflow_dispatch:  
+    branches: [main]
 
 jobs:
   build_ios_adhoc:
-    runs-on: macos-latest  # Run on a macOS virtual machine
+    runs-on: macos-latest  
 
     steps:
       - name: Checkout the code
@@ -25,7 +25,7 @@ jobs:
         uses: apple-actions/import-codesign-certs@v1
         with:
           p12-file-base64: ${{ secrets.IOS_DISTRIBUTION }}
-          p12-password: ${{ secrets.IOS_PASSWORD }}  
+          p12-password: ${{ secrets.IOS_PASSWORD }}  
 
       - name: Install Provisioning Profile
         env:
@@ -42,7 +42,7 @@ jobs:
         with:
           flutter-version: '3.16'
           channel: 'stable'
-          cache: true 
+          cache: true 
 
       - name: Restore packages
         run: |
@@ -86,10 +86,11 @@ jobs:
         run: |
           xcrun xcodebuild -workspace ios/Runner.xcworkspace -scheme Runner -configuration Release -archivePath IPA/app.xcarchive archive
           xcrun xcodebuild -exportArchive -archivePath IPA/app.xcarchive -exportOptionsPlist ios/ExportOptions.plist -exportPath IPA/cicd_ios.ipa 
-      - name: List contents of the directory
+
+      - name: List contents of the IPA directory
         run: |
-          cd IPA
-          ls -l 
+          ls -l IPA
+
       - name: Upload IPA as artifact
         uses: actions/upload-artifact@v2
         with:
