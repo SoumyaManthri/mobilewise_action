@@ -77,12 +77,20 @@ jobs:
         run: | 
           echo $PATH
           xcode-select -p
-
-
-
-      - name: Build and export .ipa (Ad-Hoc)
+      - name: Build and Archive App
         run: |
-          xcrun xcodebuild -workspace ios/Runner.xcworkspace -configuration Release -archivePath $RUNNER_TEMP/app.xcarchive -exportOptionsPlist ios/ExportOptions.plist -exportPath $RUNNER_TEMP/cicd_ios.ipa -exportArchive -verbose 2>&1 | tee xcodebuild.log 
+          xcodebuild -workspace ios/Runner.xcworkspace -scheme production -configuration Release-production DEVELOPMENT_TEAM=4RD8TSB5PJ -sdk 'iphoneos' -destination 'generic/platform=iOS' -archivePath build-output/app.xcarchive PROVISIONING_PROFILE_SPECIFIER="Apple_distribution_ios" clean archive CODE_SIGN_IDENTITY="iOS Distribution"
+
+      - name:  Export IPA  
+        run: |
+          xcodebuild -exportArchive -archivePath build-output/app.xcarchive -exportPath build-output/ios -exportOptionsPlist ios/exportOptions.plist
+
+
+
+
+      #- name: Build and export .ipa (Ad-Hoc)
+        #run: |
+          #xcrun xcodebuild -workspace ios/Runner.xcworkspace -configuration Release -archivePath $RUNNER_TEMP/app.xcarchive -exportOptionsPlist ios/ExportOptions.plist -exportPath $RUNNER_TEMP/cicd_ios.ipa -exportArchive -verbose 2>&1 | tee xcodebuild.log 
           #xcrun xcodebuild -workspace ios/Runner.xcworkspace -scheme Runner -configuration Release -archivePath $RUNNER_TEMP/app.xcarchive archive
           #xcrun xcodebuild -exportArchive -archivePath $RUNNER_TEMP/app.xcarchive -exportOptionsPlist ios/ExportOptions.plist -exportPath $RUNNER_TEMP/cicd_ios.ipa 
 
