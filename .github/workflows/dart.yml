@@ -27,7 +27,6 @@ jobs:
           p12-file-base64: ${{ secrets.IOS_DISTRIBUTION }}
           p12-password: ${{ secrets.IOS_PASSWORD }}  
 
-
       - name: Install Provisioning Profile
         env:
           PROVISIONING_PROFILE_BASE64: ${{ secrets.APPLE_DISTRIBUTION_IOS }} 
@@ -37,6 +36,7 @@ jobs:
           echo -n "$PROVISIONING_PROFILE_BASE64" | base64 --decode --output $PP_PATH
           mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
           cp $PP_PATH ~/Library/MobileDevice/Provisioning\ Profiles
+
       - name: Install and set Flutter version
         uses: subosito/flutter-action@v2
         with:
@@ -73,29 +73,26 @@ jobs:
 
       - name: Build and Resolve Swift Dependencies
         run: xcodebuild -resolvePackageDependencies -workspace ios/Runner.xcworkspace -scheme Runner -configuration Release   
+
       - name: Print Xcode Environment Variables
         run: | 
           echo $PATH
           xcode-select -p
 
-
+      - name: Create IPA directory in root
+        run: mkdir -p IPA
 
       - name: Build and export .ipa (Ad-Hoc)
         run: |
-          #xcrun xcodebuild -workspace ios/Runner.xcworkspace -configuration Release -archivePath $RUNNER_TEMP/app.xcarchive -exportOptionsPlist ios/ExportOptions.plist -exportPath $RUNNER_TEMP/cicd_ios.ipa -exportArchive -verbose 2>&1 | tee xcodebuild.log 
-          xcrun xcodebuild -workspace ios/Runner.xcworkspace -scheme Runner -configuration Release -archivePath $RUNNER_TEMP/app.xcarchive archive
-          xcrun xcodebuild -exportArchive -archivePath $RUNNER_TEMP/app.xcarchive -exportOptionsPlist ios/ExportOptions.plist -exportPath $RUNNER_TEMP/cicd_ios.ipa 
+          xcrun xcodebuild -workspace ios/Runner.xcworkspace -scheme Runner -configuration Release -archivePath IPA/app.xcarchive archive
+          xcrun xcodebuild -exportArchive -archivePath IPA/app.xcarchive -exportOptionsPlist ios/ExportOptions.plist -exportPath IPA/cicd_ios.ipa 
 
-      - name: List contents of the directory
+      - name: List contents of the IPA directory
         run: |
-          ls -l $RUNNER_TEMP
-      - name: Delay before uploading artifact
-        run: sleep 10
+          ls -l IPA
 
       - name: Upload IPA as artifact
         uses: actions/upload-artifact@v2
         with:
           name: ios-ipa
-          path: $RUNNER_TEMP/cicd_ios.ipa
-          
-
+          path: IPA/cicd_ios.ipa
