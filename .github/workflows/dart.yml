@@ -89,8 +89,8 @@ jobs:
           cd IPA
           mkdir Payload
           cp -R app.xcarchive/Products/Applications/Runner.app Payload
-          zip -qyr mobi.ipa Payload
-          rm -r Payload
+          zip -qr mobi.ipa Payload
+          rm -rf Payload
 
       - name: List contents of the IPA directory
         run: |
@@ -100,4 +100,4 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: ios-ipa
-          path: mobi.ipa
+          path: IPA/mobi.ipa
