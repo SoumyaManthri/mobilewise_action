@@ -101,7 +101,7 @@ jobs:
           mkdir -p IPA/Payload
 
           # Copy Runner.app to Payload
-          cp -R /Users/runner/Library/Developer/Xcode/DerivedData/Runner*/Build/Intermediates.noindex/ArchiveIntermediates/Runner*/InstallationBuildProductsLocation/Applications/Runner.app IPA/Payload
+          cp -R "$(find ~/Library/Developer/Xcode/DerivedData/Runner*/Build/Products/Release-iphoneos -name 'Runner.app')" IPA/Payload
 
 
           # Compress Payload
