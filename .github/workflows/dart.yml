@@ -89,7 +89,7 @@ jobs:
           cd IPA
           mkdir Payload
           ls -la app.xcarchive/Products/Applications
-          cp -R app.xcarchive/Products/Applications/Runner.app Payload
+          cp -R "app.xcarchive/Products/Applications/Runner.app Payload"
           zip -qr mobi.ipa Payload
           rm -rf Payload
 
