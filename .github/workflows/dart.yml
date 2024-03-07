@@ -86,9 +86,9 @@ jobs:
         run: |
           xcrun xcodebuild -workspace ios/Runner.xcworkspace -scheme Runner -configuration Release -archivePath IPA/app.xcarchive archive
           xcrun xcodebuild -exportArchive -archivePath IPA/app.xcarchive -exportOptionsPlist ios/ExportOptions.plist -exportPath IPA/mobi.ipa
-          mv IPA/*.ipa IPA/mobi.ipa
           cd IPA
           mkdir Payload
+          ls -la app.xcarchive/Products/Applications
           cp -R app.xcarchive/Products/Applications/Runner.app Payload
           zip -qr mobi.ipa Payload
           rm -rf Payload
