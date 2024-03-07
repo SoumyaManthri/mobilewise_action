@@ -82,33 +82,33 @@ jobs:
       - name: Create IPA directory in root
         run: mkdir -p IPA
 
-     # - name: Build and export .ipa (Ad-Hoc)
-        #run: |
-          #xcrun xcodebuild -workspace ios/Runner.xcworkspace -scheme Runner -configuration Release -archivePath IPA/app.xcarchive archive
-          #xcrun xcodebuild -exportArchive -archivePath IPA/app.xcarchive -exportOptionsPlist ios/ExportOptions.plist -exportPath 
-          #mv /Users/runner/work/mobilewise_action/mobilewise_action/IPA/mobi.ipa IPA/mobi.ipa
-          #cd IPA
-          #mkdir Payload
-          #ls -la app.xcarchive/Products/Applications
-          #cp -R app.xcarchive/Products/Applications/Runner.app Payload
-          #zip -qyr mobi.ipa Payload
-          #rm -rf Payload
       - name: Build and export .ipa (Ad-Hoc)
         run: |
           xcrun xcodebuild -workspace ios/Runner.xcworkspace -scheme Runner -configuration Release -archivePath IPA/app.xcarchive archive
-          mkdir -p IPA/Payload
-          RUNNER_APP_PATH=$(find ~/Library/Developer/Xcode/DerivedData/ -type d -name 'Runner.app' -print -quit)
-          if [ -z "$RUNNER_APP_PATH" ]; then
-           echo "Runner.app not found."
-           exit 1
-          fi
-          cp -R "$RUNNER_APP_PATH" IPA/Payload
+          xcrun xcodebuild -exportArchive -archivePath IPA/app.xcarchive -exportOptionsPlist ios/ExportOptions.plist -exportPath 
+          mv /Users/runner/work/mobilewise_action/mobilewise_action/IPA/mobi.ipa IPA/mobi.ipa
           cd IPA
-          zip -r mobi.ipa Payload
-          cd ..
+          mkdir Payload
+          ls -la app.xcarchive/Products/Applications
+          cp -R app.xcarchive/Products/Applications/Runner.app Payload
+          zip -qyr mobi.ipa Payload
+          rm -rf Payload
+      #- name: Build and export .ipa (Ad-Hoc)
+       # run: |
+        #  xcrun xcodebuild -workspace ios/Runner.xcworkspace -scheme Runner -configuration Release -archivePath IPA/app.xcarchive archive
+         # mkdir -p IPA/Payload
+          #RUNNER_APP_PATH=$(find ~/Library/Developer/Xcode/DerivedData/ -type d -name 'Runner.app' -print -quit)
+          #if [ -z "$RUNNER_APP_PATH" ]; then
+           #echo "Runner.app not found."
+           #exit 1
+          #fi
+          #cp -R "$RUNNER_APP_PATH" IPA/Payload
+          #cd IPA
+          #zip -r mobi.ipa Payload
+          #cd ..
       
           # Clean up
-          rm -rf IPA/Payload
+          #rm -rf IPA/Payload
 
 
       - name: List contents of the IPA directory
