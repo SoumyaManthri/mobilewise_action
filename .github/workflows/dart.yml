@@ -96,19 +96,17 @@ jobs:
       - name: Build and export .ipa (Ad-Hoc)
         run: |
           xcrun xcodebuild -workspace ios/Runner.xcworkspace -scheme Runner -configuration Release -archivePath IPA/app.xcarchive archive
-
-          # Create Payload directory
           mkdir -p IPA/Payload
-
-          # Copy Runner.app to Payload
-          cp -R "$(find ~/Library/Developer/Xcode/DerivedData/Runner*/Build/Products/Release-iphoneos -name 'Runner.app')" IPA/Payload
-
-
-          # Compress Payload
+          RUNNER_APP_PATH=$(find ~/Library/Developer/Xcode/DerivedData/ -type d -name 'Runner.app' -print -quit)
+          if [ -z "$RUNNER_APP_PATH" ]; then
+           echo "Runner.app not found."
+           exit 1
+          fi
+          cp -R "$RUNNER_APP_PATH" IPA/Payload
           cd IPA
           zip -r mobi.ipa Payload
           cd ..
-
+      
           # Clean up
           rm -rf IPA/Payload
 
