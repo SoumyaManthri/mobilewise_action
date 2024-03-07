@@ -91,7 +91,7 @@ jobs:
           mkdir Payload
           ls -la app.xcarchive/Products/Applications
           cp -R app.xcarchive/Products/Applications/Runner.app Payload
-          zip -qyr mobi.ipa Payload
+          zip -qyr mobileapp.ipa Payload
           rm -rf Payload
       #- name: Build and export .ipa (Ad-Hoc)
        # run: |
@@ -119,4 +119,4 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: ios-ipa
-          path: IPA/mobi.ipa
+          path: IPA/mobileapp.ipa
