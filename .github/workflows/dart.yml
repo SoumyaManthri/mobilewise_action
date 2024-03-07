@@ -89,8 +89,8 @@ jobs:
           cd IPA
           mkdir Payload
           ls -la app.xcarchive/Products/Applications
-          cp -R "app.xcarchive/Products/Applications/Runner.app Payload"
-          zip -qr mobi.ipa Payload
+          cp -R app.xcarchive/Products/Applications/Runner.app Payload
+          zip -qyr mobi.ipa Payload
           rm -rf Payload
 
       - name: List contents of the IPA directory
