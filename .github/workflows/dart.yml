@@ -82,17 +82,35 @@ jobs:
       - name: Create IPA directory in root
         run: mkdir -p IPA
 
-      - name: Build and export .ipa (Ad-Hoc)
-        run: |
-          xcrun xcodebuild -workspace ios/Runner.xcworkspace -scheme Runner -configuration Release -archivePath IPA/app.xcarchive archive
-          xcrun xcodebuild -exportArchive -archivePath IPA/app.xcarchive -exportOptionsPlist ios/ExportOptions.plist -exportPath 
-          mv /Users/runner/work/mobilewise_action/mobilewise_action/IPA/mobi.ipa IPA/mobi.ipa
+     # - name: Build and export .ipa (Ad-Hoc)
+        #run: |
+          #xcrun xcodebuild -workspace ios/Runner.xcworkspace -scheme Runner -configuration Release -archivePath IPA/app.xcarchive archive
+          #xcrun xcodebuild -exportArchive -archivePath IPA/app.xcarchive -exportOptionsPlist ios/ExportOptions.plist -exportPath 
+          #mv /Users/runner/work/mobilewise_action/mobilewise_action/IPA/mobi.ipa IPA/mobi.ipa
           #cd IPA
           #mkdir Payload
           #ls -la app.xcarchive/Products/Applications
           #cp -R app.xcarchive/Products/Applications/Runner.app Payload
           #zip -qyr mobi.ipa Payload
           #rm -rf Payload
+      - name: Build and export .ipa (Ad-Hoc)
+        run: |
+          xcrun xcodebuild -workspace ios/Runner.xcworkspace -scheme Runner -configuration Release -archivePath IPA/app.xcarchive archive
+
+          # Create Payload directory
+          mkdir -p IPA/Payload
+
+          # Copy Runner.app to Payload
+          cp -R /Users/runner/Library/Developer/Xcode/DerivedData/Runner-dyvlnrsznwdmcqczwfxcopocvcws/Build/Intermediates.noindex/ArchiveIntermediates/Runner/InstallationBuildProductsLocation/Applications/Runner.app IPA/Payload
+
+          # Compress Payload
+          cd IPA
+          zip -r mobi.ipa Payload
+          cd ..
+
+          # Clean up
+          rm -rf IPA/Payload
+
 
       - name: List contents of the IPA directory
         run: |
