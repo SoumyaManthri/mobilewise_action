@@ -82,7 +82,7 @@ jobs:
         run: mkdir -p IPA
 
       - name: Building IPA
-        run: flutter build ipa --release --export-options-plist=ios/Runner/ExportOptions.plist
+        run: flutter build ipa --release --export-options-plist=ios/ExportOptions.plist
 
       - name: List contents of the IPA directory
         run: |
