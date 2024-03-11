@@ -82,19 +82,50 @@ jobs:
       - name: Create IPA directory in root
         run: mkdir -p IPA
 
+
       - name: Build and export .ipa (Ad-Hoc)
         run: |
-          xcrun xcodebuild -workspace ios/Runner.xcworkspace -scheme Runner -configuration Release -archivePath IPA/app.xcarchive archive
-          #xcrun xcodebuild -exportArchive -archivePath IPA/app.xcarchive -exportOptionsPlist ios/ExportOptions.plist -exportPath IPA/mobi.ipa -verbose
-          xcrun xcodebuild -exportArchive -archivePath IPA/app.xcarchive -exportProvisioningProfile "Apple_distribution_ios" -exportPath IPA/mobi.ipa -verbose
+    
+         PROVISIONING_PROFILE_UUID="e55e6b49-7fd5-4b7d-af5c-cad4e2d8145a"
           
-          #mv IPA/Runner.ipa IPA/mobi.ipa          
+          # Create a temporary export options plist file
+          echo '<?xml version="1.0" encoding="UTF-8"?>
+          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+          <plist version="1.0">
+          <dict>
+              <key>method</key>
+              <string>app-store</string>
+              <key>provisioningProfiles</key>
+              <dict>
+                  <key>com.vassar.mobilewise.flutter-mobilewise</key>
+                  <string>'"$PROVISIONING_PROFILE_UUID"'</string>
+              </dict>
+          </dict>
+          </plist>' > ExportOptions.plist
+          
+          xcrun xcodebuild -workspace ios/Runner.xcworkspace -scheme Runner -configuration Release -archivePath IPA/app.xcarchive archive
+          xcrun xcodebuild -exportArchive -archivePath IPA/app.xcarchive -exportOptionsPlist ExportOptions.plist -exportPath IPA/mobi.ipa -verbose
           cd IPA
           mkdir Payload
           ls -la app.xcarchive/Products/Applications
           cp -R app.xcarchive/Products/Applications/Runner.app Payload
           zip -qyr mobileapp.ipa Payload
           rm -rf Payload
+
+
+      #- name: Build and export .ipa (Ad-Hoc)
+       # run: |
+        #  xcrun xcodebuild -workspace ios/Runner.xcworkspace -scheme Runner -configuration Release -archivePath IPA/app.xcarchive archive
+         # #xcrun xcodebuild -exportArchive -archivePath IPA/app.xcarchive -exportOptionsPlist ios/ExportOptions.plist -exportPath IPA/mobi.ipa -verbose
+          #xcrun xcodebuild -exportArchive -archivePath IPA/app.xcarchive -exportProvisioningProfile "Apple_distribution_ios" -exportPath IPA/mobi.ipa -verbose
+          #
+          #mv IPA/Runner.ipa IPA/mobi.ipa          
+          #cd IPA
+          #mkdir Payload
+          #ls -la app.xcarchive/Products/Applications
+          #cp -R app.xcarchive/Products/Applications/Runner.app Payload
+          #zip -qyr mobileapp.ipa Payload
+          #rm -rf Payload
       #- name: Build and export .ipa (Ad-Hoc)
        # run: |
         #  xcrun xcodebuild -workspace ios/Runner.xcworkspace -scheme Runner -configuration Release -archivePath IPA/app.xcarchive archive
