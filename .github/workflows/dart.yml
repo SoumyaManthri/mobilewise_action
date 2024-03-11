@@ -85,7 +85,9 @@ jobs:
       - name: Build and export .ipa (Ad-Hoc)
         run: |
           xcrun xcodebuild -workspace ios/Runner.xcworkspace -scheme Runner -configuration Release -archivePath IPA/app.xcarchive archive
-          xcrun xcodebuild -exportArchive -archivePath IPA/app.xcarchive -exportOptionsPlist ios/ExportOptions.plist -exportPath IPA/mobi.ipa -verbose
+          #xcrun xcodebuild -exportArchive -archivePath IPA/app.xcarchive -exportOptionsPlist ios/ExportOptions.plist -exportPath IPA/mobi.ipa -verbose
+          xcrun xcodebuild -exportArchive -archivePath IPA/app.xcarchive -exportProvisioningProfile "Apple_distribution_ios" -exportPath IPA/mobi.ipa -verbose
+          
           #mv IPA/Runner.ipa IPA/mobi.ipa          
           cd IPA
           mkdir Payload
