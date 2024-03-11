@@ -82,7 +82,7 @@ jobs:
         run: mkdir -p IPA
 
       - name: Building IPA
-        run: flutter build ipa --release --target=lib/main_dev.dart --export-options-plist=ios/ExportOptions.plist
+        run: flutter build ipa --release --target=lib/main_dev.dart --export-options-plist=ios/ExportOptions.plist --output=IPA
 
       - name: List contents of the IPA directory
         run: |
