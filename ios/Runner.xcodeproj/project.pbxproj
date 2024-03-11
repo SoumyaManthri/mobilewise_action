@@ -470,7 +470,7 @@
 				"ASSETCATALOG_COMPILER_ALTERNATE_APPICON_NAMES[sdk=*]" = AppIcon;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_IDENTITY = "iPhone Distribution: Laxmiprasad Putta (4RD8TSB5PJ)";
+				CODE_SIGN_IDENTITY = "Apple Distribution: Laxmiprasad Putta (4RD8TSB5PJ)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "Distribution: Laxmiprasad Putta (4RD8TSB5PJ)";
 				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
@@ -498,7 +498,7 @@
 			baseConfigurationReference = BE06AE2E2CC482EAB450A353 /* Pods-RunnerTests.debug.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
-				CODE_SIGN_IDENTITY = "Distribution: Laxmiprasad Putta (4RD8TSB5PJ)";
+				CODE_SIGN_IDENTITY = "Apple Distribution: Laxmiprasad Putta (4RD8TSB5PJ)";
 				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 4RD8TSB5PJ;
@@ -519,7 +519,7 @@
 			baseConfigurationReference = 849CCFFEA73332358DBA96F3 /* Pods-RunnerTests.release.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
-				CODE_SIGN_IDENTITY = "Distribution: Laxmiprasad Putta (4RD8TSB5PJ)";
+				CODE_SIGN_IDENTITY = "Apple Distribution: Laxmiprasad Putta (4RD8TSB5PJ)";
 				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 4RD8TSB5PJ;
@@ -538,7 +538,7 @@
 			baseConfigurationReference = 73FEEB39F0CFC3CBBD588BBB /* Pods-RunnerTests.profile.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
-				CODE_SIGN_IDENTITY = "Distribution: Laxmiprasad Putta (4RD8TSB5PJ)";
+				CODE_SIGN_IDENTITY = "Apple Distribution: Laxmiprasad Putta (4RD8TSB5PJ)";
 				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 4RD8TSB5PJ;
@@ -668,8 +668,8 @@
 				"ASSETCATALOG_COMPILER_ALTERNATE_APPICON_NAMES[sdk=*]" = AppIcon;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_IDENTITY = " Distribution: Laxmiprasad Putta (4RD8TSB5PJ)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = " Distribution: Laxmiprasad Putta (4RD8TSB5PJ)";
+				CODE_SIGN_IDENTITY = "Apple Distribution: Laxmiprasad Putta (4RD8TSB5PJ)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "Apple Distribution: Laxmiprasad Putta (4RD8TSB5PJ)";
 				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = "";
@@ -699,8 +699,8 @@
 				"ASSETCATALOG_COMPILER_ALTERNATE_APPICON_NAMES[sdk=*]" = AppIcon;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_IDENTITY = " Distribution: Laxmiprasad Putta (4RD8TSB5PJ)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = " Distribution: Laxmiprasad Putta (4RD8TSB5PJ)";
+				CODE_SIGN_IDENTITY = "Apple Distribution: Laxmiprasad Putta (4RD8TSB5PJ)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "Apple Distribution: Laxmiprasad Putta (4RD8TSB5PJ)";
 				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = "";
