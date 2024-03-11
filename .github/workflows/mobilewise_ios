@@ -1,0 +1,95 @@
+name: Flutter_iOS_DISTRIBUTION
+
+on:
+  workflow_dispatch:
+    branches: [main]
+
+jobs:
+  build_ios_adhoc:
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout the code
+        uses: actions/checkout@v2
+
+      - name: Create new branch
+        id: create_branch
+        run: |
+          git checkout -b new_branch
+
+      - name: Clean Derived Data
+        run: |
+          rm -rf ~/Library/Developer/Xcode/DerivedData
+
+      - name: Install Apple Certificate (Distribution)
+        uses: apple-actions/import-codesign-certs@v1
+        with:
+          p12-file-base64: ${{ secrets.IOS_DISTRIBUTION }}
+          p12-password: ${{ secrets.IOS_PASSWORD }}
+
+      - name: Install Provisioning Profile
+        env:
+          PROVISIONING_PROFILE_BASE64: ${{ secrets.APPLE_DISTRIBUTION_IOS }}
+        run: |
+          PP_PATH=$RUNNER_TEMP/APPLE_DISTRIBUTION_IOS.mobileprovision
+          echo -n "$PROVISIONING_PROFILE_BASE64" | base64 --decode --output $PP_PATH
+          mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
+          cp $PP_PATH ~/Library/MobileDevice/Provisioning\ Profiles
+
+      - name: Install and set Flutter version
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.16'
+          channel: 'stable'
+          cache: true
+
+      - name: Restore packages
+        run: |
+          flutter clean
+          flutter pub get
+
+      - name: Reinstall CocoaPods
+        run: |
+          cd ios
+          rm -rf Pods/ Podfile.lock
+          pod deintegrate
+          pod install
+          cd ..
+
+      - name: Print current working directory
+        run: pwd
+
+      - name: List contents of the directory
+        run: |
+          ls -l
+          echo "Flutter Root: ${{ env.FLUTTER_ROOT }}"
+          cd ${{ env.FLUTTER_ROOT }}
+          ls -R
+          ls -l
+
+      - name: Clean Xcode Project
+        run: xcodebuild clean -workspace ios/Runner.xcworkspace -scheme Runner -configuration Release
+
+      - name: Build and Resolve Swift Dependencies
+        run: xcodebuild -resolvePackageDependencies -workspace ios/Runner.xcworkspace -scheme Runner -configuration Release
+
+      - name: Print Xcode Environment Variables
+        run: |
+          echo $PATH
+          xcode-select -p
+
+      - name: Create IPA directory in root
+        run: mkdir -p IPA
+
+      - name: Building IPA
+        run: flutter build ipa --release --export-options-plist=ios/Runner/ExportOptions.plist
+
+      - name: List contents of the IPA directory
+        run: |
+          ls -R IPA
+
+      - name: Upload IPA as artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: ios-ipa
+          path: IPA/mobileapp.ipa
