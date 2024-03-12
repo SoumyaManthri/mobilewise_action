@@ -86,9 +86,12 @@ jobs:
 
       - name: Convert xcarchive to IPA
         run: xcodebuild -exportArchive -archivePath /Users/runner/work/mobilewise_action/mobilewise_action/build/ios/archive/Runner.xcarchive -exportPath IPA/mobileapp.ipa -exportOptionsPlist ios/ExportOptions.plist
+      - name: Remove existing IPA file (if exists)
+        run: rm -f IPA/mobileapp.ipa
+
 
       - name: Move IPA to IPA directory
-        run: mv /Users/runner/work/mobilewise_action/mobilewise_action/IPA/mobileapp.ipa IPA/
+        run: mv /Users/runner/work/mobilewise_action/mobilewise_action/IPA/mobileapp_ios.ipa IPA/
 
 
       - name: List contents of the IPA directory
