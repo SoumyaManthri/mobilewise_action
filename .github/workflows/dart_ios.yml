@@ -85,7 +85,7 @@ jobs:
         run: flutter build ipa --release --target=lib/main_dev.dart --export-options-plist=ios/ExportOptions.plist
 
       - name: Move IPA to IPA directory
-        run: mv build/ios/iphoneos/Runner.ipa IPA/mobileapp.ipa
+        run: mv build/ios/ipa/*.ipa IPA/mobileapp.ipa
 
       - name: List contents of the IPA directory
         run: |
