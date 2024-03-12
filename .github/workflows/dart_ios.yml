@@ -89,8 +89,8 @@ jobs:
 
 
 
-      - name: Move IPA to IPA directory
-        run: mv /Users/runner/work/mobilewise_action/mobilewise_action/IPA/mobileapp_ios.ipa IPA/
+     # - name: Move IPA to IPA directory
+     #   run: mv /Users/runner/work/mobilewise_action/mobilewise_action/IPA/mobileapp_ios.ipa IPA/
 
 
       - name: List contents of the IPA directory
