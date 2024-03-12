@@ -88,7 +88,8 @@ jobs:
         run: xcodebuild -exportArchive -archivePath /Users/runner/work/mobilewise_action/mobilewise_action/build/ios/archive/Runner.xcarchive -exportPath IPA/mobileapp.ipa -exportOptionsPlist ios/ExportOptions.plist
 
       - name: Move IPA to IPA directory
-        run: mv build/ios/ipa/*.ipa IPA/mobileapp.ipa
+        run: mv /Users/runner/work/mobilewise_action/mobilewise_action/IPA/mobileapp.ipa IPA/
+
 
       - name: List contents of the IPA directory
         run: |
