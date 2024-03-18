@@ -78,7 +78,7 @@ jobs:
           echo $PATH
           xcode-select -p
 
-      - name: Create IPA directory in root
+      - name: Create IPA directory in root directory
         run: mkdir -p IPA
 
       - name: Building IPA
