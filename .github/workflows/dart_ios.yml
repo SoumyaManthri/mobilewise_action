@@ -117,3 +117,12 @@ jobs:
         with:
          name: ios-ipa
          path: IPA/MobileWise.ipa
+      - name: Extract IPA contents
+        run: unzip -l IPA/MobileWise.ipa
+
+      - name: List files and their sizes
+        run: |
+          unzip -l IPA/MobileWise.ipa
+          unzip -v IPA/MobileWise.ipa
+
+
