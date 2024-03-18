@@ -87,11 +87,19 @@ jobs:
       - name: Convert xcarchive to IPA
         run: xcodebuild -exportArchive -archivePath /Users/runner/work/mobilewise_action/mobilewise_action/build/ios/archive/Runner.xcarchive -exportPath IPA/mobileapp.ipa -exportOptionsPlist ios/ExportOptions.plist
 
+      - name: Find IPA file
+        id: find_ipa
+        run: |
+          cd IPA
+          # Find IPA files smaller than 30MB
+          selected_ipa=$(find . -name "*.ipa" -size -30M)
+          echo "::set-output name=ipa_path::$selected_ipa"
 
-
-     # - name: Move IPA to IPA directory
-     #   run: mv /Users/runner/work/mobilewise_action/mobilewise_action/IPA/mobileapp_ios.ipa IPA/
-
+      - name: Use selected IPA file
+        run: |
+          selected_ipa_path="${{ steps.find_ipa.outputs.ipa_path }}"
+          echo "Selected IPA file: $selected_ipa_path"
+          # Do whatever you need with the selected IPA file
 
       - name: List contents of the IPA directory
         run: |
@@ -101,4 +109,4 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: ios-ipa
-          path: IPA/mobileapp.ipa
+          path: ${{ steps.find_ipa.outputs.ipa_path }}
