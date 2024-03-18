@@ -87,7 +87,13 @@ jobs:
       - name: Convert xcarchive to IPA
         run: xcodebuild -exportArchive -archivePath /Users/runner/work/mobilewise_action/mobilewise_action/build/ios/archive/Runner.xcarchive -exportPath IPA/MobileWise.ipa -exportOptionsPlist ios/ExportOptions.plist
 
-
+      - name: Strip Swift libraries
+        run: |
+          cd IPA
+          find . -name "*.dylib" -exec strip -S -x {} \;
+          find . -name "*.swiftmodule" -exec strip -S -x {} \;
+          find . -name "*.swiftinterface" -exec strip -S -x {} \;
+          
       - name: List contents of the IPA directory with sizes
         run: |
           ls -Rl IPA
