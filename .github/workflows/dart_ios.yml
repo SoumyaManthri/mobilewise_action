@@ -82,15 +82,15 @@ jobs:
         run: mkdir -p IPA
 
       - name: Building IPA
-        run: flutter build ipa --release --no-codesign --target=lib/main_dev.dart --export-options-plist=ios/ExportOptions.plist
+        run: flutter build ipa --release --no-codesign --target=lib/main_dev.dart --export-options-plist=ios/ExportOptions.plist --target-platform ios-arm
 
       - name: Convert xcarchive to IPA
         run: xcodebuild -exportArchive -archivePath /Users/runner/work/mobilewise_action/mobilewise_action/build/ios/archive/Runner.xcarchive -exportPath IPA/MobileWise.ipa -exportOptionsPlist ios/ExportOptions.plist
 
-      - name: Strip Unwanted dependencies
-        run: |
-          cd IPA
-          lipo -remove i386 -remove x86_64 -remove armv7 -output MobileWiseStripped.ipa MobileWise.ipa
+      #- name: Strip Unwanted dependencies
+       # run: |
+        #  cd IPA
+         # lipo -remove i386 -remove x86_64 -remove armv7 -output MobileWiseStripped.ipa MobileWise.ipa
          
           
       - name: List contents of the IPA directory with sizes
