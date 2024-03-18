@@ -100,6 +100,7 @@ jobs:
           # Find IPA files smaller than 30MB
           selected_ipa=$(find . -name "*.ipa" -size -30M)
           echo "::set-output name=ipa_path::$selected_ipa"
+          echo "Selected IPA files: $selected_ipa"
 
       - name: Use selected IPA file
         run: |
