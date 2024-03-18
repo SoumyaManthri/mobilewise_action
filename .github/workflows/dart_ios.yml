@@ -85,7 +85,7 @@ jobs:
         run: flutter build ipa --release --no-codesign --target=lib/main_dev.dart --export-options-plist=ios/ExportOptions.plist
 
       - name: Convert xcarchive to IPA
-        run: xcodebuild -exportArchive -archivePath /Users/runner/work/mobilewise_action/mobilewise_action/build/ios/archive/Runner.xcarchive -exportPath IPA/mobileapp.ipa -exportOptionsPlist ios/ExportOptions.plist
+        run: xcodebuild -exportArchive -archivePath /Users/runner/work/mobilewise_action/mobilewise_action/build/ios/archive/Runner.xcarchive -exportPath IPA/MobileWise.ipa -exportOptionsPlist ios/ExportOptions.plist
 
 
       - name: List contents of the IPA directory with sizes
