@@ -113,7 +113,7 @@ jobs:
           ls -R IPA
 
       - name: Upload IPA as artifact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v2 
         with:
-          name: ios-ipa
-          path: ${{ steps.find_ipa.outputs.ipa_path }}
+         name: ios-ipa
+         path: IPA/MobileWise.ipa
