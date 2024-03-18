@@ -18,6 +18,6 @@
         <string>23aa3adc-6691-44c1-b266-b82a19b0c3b9</string>
     </dict>
     <key>thinning</key>
-    <string>&lt;none&gt;</string>
+    <string>&lt;thin-for-all-variants&gt;</string>
 </dict>
 </plist>
