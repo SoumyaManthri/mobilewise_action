@@ -87,6 +87,12 @@ jobs:
       - name: Convert xcarchive to IPA
         run: xcodebuild -exportArchive -archivePath /Users/runner/work/mobilewise_action/mobilewise_action/build/ios/archive/Runner.xcarchive -exportPath IPA/mobileapp.ipa -exportOptionsPlist ios/ExportOptions.plist
 
+
+      - name: List contents of the IPA directory with sizes
+        run: |
+          ls -Rl IPA
+
+
       - name: Find IPA file
         id: find_ipa
         run: |
