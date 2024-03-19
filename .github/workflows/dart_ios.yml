@@ -50,8 +50,16 @@ jobs:
       - name: Build IPA
         run: flutter build ipa --release --no-codesign --target=lib/main_dev.dart --export-options-plist=ios/ExportOptions.plist
 
-      - name: Verify Optimization Setting
-        run: grep -A1 'SWIFT_OPTIMIZATION_LEVEL' ios/Runner.xcodeproj/project.pbxproj | grep '-Osize'
+      #- name: Verify Optimization Setting
+        #run: grep -A1 'SWIFT_OPTIMIZATION_LEVEL' ios/Runner.xcodeproj/project.pbxproj | grep '-Osize'
+       # run: grep -A1 'SWIFT_OPTIMIZATION_LEVEL' ios/Runner.xcodeproj/project.pbxproj | grep '-Osize'
+
+      - name: Get Optimization Level Setting
+        run: grep -A1 'SWIFT_OPTIMIZATION_LEVEL' ios/Runner.xcodeproj/project.pbxproj | head -n 2
+      - name: Verify Optimization Setting is '-Osize'
+        run: echo ${{ steps.Get_Optimization_Level.outputs }} | grep '-Osize'
+
+
 
       - name: Verify Bitcode Setting
         run: grep -B1 'ENABLE_BITCODE' ios/Runner.xcodeproj/project.pbxproj | grep 'YES' 
