@@ -87,8 +87,8 @@ jobs:
       - name: Convert xcarchive to IPA
         run: xcodebuild -exportArchive -archivePath /Users/runner/work/mobilewise_action/mobilewise_action/build/ios/archive/Runner.xcarchive -exportPath IPA/MobileWise.ipa -exportOptionsPlist ios/ExportOptions.plist
 
-      - name: Analyze IPA contents
-        run: lipo -info IPA/MobileWise.ipa
+     # - name: Analyze IPA contents
+      #  run: lipo -info IPA/MobileWise.ipa
 
       - name: Compress iOS build directory
         run: tar -czf ios_build.tar.gz ios
