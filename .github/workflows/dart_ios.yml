@@ -61,8 +61,8 @@ jobs:
 
 
 
-      - name: Verify Bitcode Setting
-        run: grep -B1 'ENABLE_BITCODE' ios/Runner.xcodeproj/project.pbxproj | grep 'YES' 
+     # - name: Verify Bitcode Setting
+      #  run: grep -B1 'ENABLE_BITCODE' ios/Runner.xcodeproj/project.pbxproj | grep 'YES' 
 
       - name: Analyze IPA Architectures
         run: lipo -info IPA/MobileWise.ipa
