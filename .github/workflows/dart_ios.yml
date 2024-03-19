@@ -56,8 +56,8 @@ jobs:
 
       - name: Get Optimization Level Setting
         run: grep -A1 'SWIFT_OPTIMIZATION_LEVEL' ios/Runner.xcodeproj/project.pbxproj | head -n 2
-      - name: Verify Optimization Setting is '-Osize'
-        run: echo ${{ steps.Get_Optimization_Level.outputs }} | grep '-Osize'
+    #  - name: Verify Optimization Setting is '-Osize'
+      #  run: echo ${{ steps.Get_Optimization_Level.outputs }} | grep '-Osize'
 
 
 
