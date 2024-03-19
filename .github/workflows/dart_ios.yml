@@ -1,4 +1,4 @@
-name: Flutter_iOS_DISTRIBUTION1
+name: Build IPA from Runner.xcarchive
 
 on:
   workflow_dispatch:
@@ -47,58 +47,28 @@ jobs:
       - name: Clean and Build Xcode Project
         run: xcodebuild clean build -workspace ios/Runner.xcworkspace -scheme Runner -configuration Release
 
-      - name: Build IPA
-        run: flutter build ipa --release --no-codesign --target=lib/main_dev.dart --export-options-plist=ios/ExportOptions.plist
+      - name: Create IPA directory
+        run: mkdir -p IPA
 
-      #- name: Verify Optimization Setting
-        #run: grep -A1 'SWIFT_OPTIMIZATION_LEVEL' ios/Runner.xcodeproj/project.pbxproj | grep '-Osize'
-       # run: grep -A1 'SWIFT_OPTIMIZATION_LEVEL' ios/Runner.xcodeproj/project.pbxproj | grep '-Osize'
+      - name: Build xcarchive
+        run: xcodebuild archive -workspace ios/Runner.xcworkspace -scheme Runner -configuration Release -archivePath IPA/Runner.xcarchive
 
-      - name: Get Optimization Level Setting
-        run: grep -A1 'SWIFT_OPTIMIZATION_LEVEL' ios/Runner.xcodeproj/project.pbxproj | head -n 2
-    #  - name: Verify Optimization Setting is '-Osize'
-      #  run: echo ${{ steps.Get_Optimization_Level.outputs }} | grep '-Osize'
+      - name: Extract Runner.app from xcarchive
+        run: |
+          mkdir -p IPA/Payload
+          cp -R IPA/Runner.xcarchive/Products/Applications/Runner.app IPA/Payload
 
-
-
-     # - name: Verify Bitcode Setting
-      #  run: grep -B1 'ENABLE_BITCODE' ios/Runner.xcodeproj/project.pbxproj | grep 'YES' 
-
-      - name: Analyze IPA Architectures
-        run: lipo -info IPA/MobileWise.ipa
-        id: analyze_architectures
-
-      - name: Strip IPA (if needed)
-        if: contains(steps.analyze_architectures.outputs.stdout, 'armv7')
+      - name: Create IPA from Runner.app
         run: |
           cd IPA
-          lipo -remove armv7 -output MobileWiseStripped.ipa MobileWise.ipa 
-          mv MobileWiseStripped.ipa MobileWise.ipa
+          zip -qyr MobileWise.ipa Payload
+          rm -rf Payload
 
-      - name: Track libswiftCore.dylib size
-        run: |
-          swift_lib_path=$(find Payload -name libswiftCore.dylib)
-          swift_lib_size=$(stat -f%z "$swift_lib_path")
-          echo "libswiftCore.dylib size: $swift_lib_size bytes"
-          # Store this value to track across builds 
+      - name: Verify IPA contents
+        run: unzip -l IPA/MobileWise.ipa
 
-      - name: Compress iOS build directory
-        run: tar -czf ios_build.tar.gz ios
-
-      - name: Upload iOS build as artifact
-        uses: actions/upload-artifact@v2
+      - name: Upload IPA as artifact
+        uses: actions/upload-artifact@v2 
         with:
-          name: ios-build-artifact
-          path: ios_build.tar.gz
-
-      - name: List contents of the IPA directory with sizes
-        run: |
-          ls -Rl IPA
-
-      - name: Extract IPA contents
-        run: unzip -l IPA/MobileWise.ipa/MobileWise.ipa
-
-      - name: List files and their sizes
-        run: |
-          unzip -l IPA/MobileWise.ipa/MobileWise.ipa
-          unzip -v IPA/MobileWise.ipa/MobileWise.ipa
+          name: ios-ipa
+          path: IPA/MobileWise.ipa
