@@ -108,15 +108,15 @@ jobs:
         #with:
          # name: ios-build-artifact
           #path: ios_build.tar.gz
+  
+      - name: List contents of the IPA directory with sizes
+        run: |
+          ls -Rl IPA
 
-      #- name: List contents of the IPA directory with sizes
-       # run: |
-        #  ls -Rl IPA
+      - name: Extract IPA contents
+        run: unzip -l IPA/MobileWise.ipa/MobileWise.ipa
 
-      #- name: Extract IPA contents
-       # run: unzip -l IPA/MobileWise.ipa/MobileWise.ipa
-
-      #- name: List files and their sizes
-       # run: |
-        #  unzip -l IPA/MobileWise.ipa/MobileWise.ipa
-         # unzip -v IPA/MobileWise.ipa/MobileWise.ipa
+      - name: List files and their sizes
+        run: |
+          unzip -l IPA/MobileWise.ipa/MobileWise.ipa
+          unzip -v IPA/MobileWise.ipa/MobileWise.ipa
