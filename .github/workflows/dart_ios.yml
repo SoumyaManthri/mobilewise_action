@@ -87,26 +87,36 @@ jobs:
       - name: Convert xcarchive to IPA
         run: xcodebuild -exportArchive -archivePath /Users/runner/work/mobilewise_action/mobilewise_action/build/ios/archive/Runner.xcarchive -exportPath IPA/MobileWise.ipa -exportOptionsPlist ios/ExportOptions.plist
 
+      - name: Compress IPA
+        run: tar -czf IPA/MobileWiseCompressed.tar.gz IPA/MobileWise.ipa
+
+      - name: Upload iOS IPA as artifact
+        uses: actions/upload-artifact@v2
+        with:
+         name: ios-ipa
+         path: IPA/MobileWiseCompressed.tar.gz
+
+
      # - name: Analyze IPA contents
       #  run: lipo -info IPA/MobileWise.ipa
 
-      - name: Compress iOS build directory
-        run: tar -czf ios_build.tar.gz ios
+     # - name: Compress iOS build directory
+      #  run: tar -czf ios_build.tar.gz ios
 
-      - name: Upload iOS build as artifact
-        uses: actions/upload-artifact@v2
-        with:
-          name: ios-build-artifact
-          path: ios_build.tar.gz
+      #- name: Upload iOS build as artifact
+       # uses: actions/upload-artifact@v2
+        #with:
+         # name: ios-build-artifact
+          #path: ios_build.tar.gz
 
-      - name: List contents of the IPA directory with sizes
-        run: |
-          ls -Rl IPA
+      #- name: List contents of the IPA directory with sizes
+       # run: |
+        #  ls -Rl IPA
 
-      - name: Extract IPA contents
-        run: unzip -l IPA/MobileWise.ipa/MobileWise.ipa
+      #- name: Extract IPA contents
+       # run: unzip -l IPA/MobileWise.ipa/MobileWise.ipa
 
-      - name: List files and their sizes
-        run: |
-          unzip -l IPA/MobileWise.ipa/MobileWise.ipa
-          unzip -v IPA/MobileWise.ipa/MobileWise.ipa
+      #- name: List files and their sizes
+       # run: |
+        #  unzip -l IPA/MobileWise.ipa/MobileWise.ipa
+         # unzip -v IPA/MobileWise.ipa/MobileWise.ipa
