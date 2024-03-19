@@ -90,41 +90,19 @@ jobs:
       - name: Analyze IPA contents
         run: lipo -info IPA/MobileWise.ipa
 
-      #- name: Strip Unwanted dependencies
-       # run: |
-        #  cd IPA
-         # lipo -remove i386 -remove x86_64 -remove armv7 -output MobileWiseStripped.ipa MobileWise.ipa
-         
-          
+      - name: Compress iOS build directory
+        run: tar -czf ios_build.tar.gz ios
+
+      - name: Upload iOS build as artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: ios-build-artifact
+          path: ios_build.tar.gz
+
       - name: List contents of the IPA directory with sizes
         run: |
           ls -Rl IPA
 
-
-      #- name: Find IPA file
-       # id: find_ipa
-        #run: |
-         # cd IPA
-          ## Find IPA files smaller than 30MB
-          #selected_ipa=$(find . -name "*.ipa" -size -30M)
-          #echo "::set-output name=ipa_path::$selected_ipa"
-          #echo "Selected IPA files: $selected_ipa"
-
-      #- name: Use selected IPA file
-       # run: |
-        #  selected_ipa_path="${{ steps.find_ipa.outputs.ipa_path }}"
-         # echo "Selected IPA file: $selected_ipa_path"
-          # Do whatever you need with the selected IPA file
-
-      #- name: List contents of the IPA directory
-       # run: |
-        #  ls -R IPA
-
-      - name: Upload IPA as artifact
-        uses: actions/upload-artifact@v2 
-        with:
-         name: ios-ipa
-         path: IPA/MobileWise.ipa
       - name: Extract IPA contents
         run: unzip -l IPA/MobileWise.ipa/MobileWise.ipa
 
@@ -132,5 +110,3 @@ jobs:
         run: |
           unzip -l IPA/MobileWise.ipa/MobileWise.ipa
           unzip -v IPA/MobileWise.ipa/MobileWise.ipa
-
-
