@@ -1,4 +1,4 @@
-name: Flutter_iOS_DISTRIBUTION1
+name: Flutter_iOS_DISTRIBUTION
 
 on:
   workflow_dispatch:
@@ -12,16 +12,14 @@ jobs:
       - name: Checkout the code
         uses: actions/checkout@v2
 
-      - name: Create new branch
-        id: create_branch
-        run: |
-          git checkout -b new_branch
+      - name: Install Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.16'
+          channel: 'stable'
+          cache: true
 
-      - name: Clean Derived Data
-        run: |
-          rm -rf ~/Library/Developer/Xcode/DerivedData
-
-      - name: Install Apple Certificate (Distribution)
+      - name: Set up Code Signing 
         uses: apple-actions/import-codesign-certs@v1
         with:
           p12-file-base64: ${{ secrets.IOS_DISTRIBUTION }}
@@ -29,86 +27,62 @@ jobs:
 
       - name: Install Provisioning Profile
         env:
-          PROVISIONING_PROFILE_BASE64: ${{ secrets.NEW_DISTRIBUTION_IOS}}
+          PROVISIONING_PROFILE_BASE64: ${{ secrets.NEW_DISTRIBUTION_IOS }}
         run: |
           PP_PATH=$RUNNER_TEMP/NEW_DISTRIBUTION_IOS.mobileprovision
           echo -n "$PROVISIONING_PROFILE_BASE64" | base64 --decode --output $PP_PATH
           mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
           cp $PP_PATH ~/Library/MobileDevice/Provisioning\ Profiles
 
-      - name: Install and set Flutter version
-        uses: subosito/flutter-action@v2
-        with:
-          flutter-version: '3.16'
-          channel: 'stable'
-          cache: true
-
-      - name: Restore packages
+      - name:  Flutter setup and dependencies
         run: |
           flutter clean
           flutter pub get
-
-      - name: Reinstall CocoaPods
-        run: |
-          cd ios
+          cd ios 
           rm -rf Pods/ Podfile.lock
           pod deintegrate
-          pod install
+          pod install 
           cd ..
 
-      - name: Print current working directory
-        run: pwd
+      - name: Clean and Build Xcode Project
+        run: xcodebuild clean build -workspace ios/Runner.xcworkspace -scheme Runner -configuration Release
 
-      - name: List contents of the directory
-        run: |
-          ls -l
-          echo "Flutter Root: ${{ env.FLUTTER_ROOT }}"
-          cd ${{ env.FLUTTER_ROOT }}
-          ls -R
-          ls -l
-
-      - name: Clean Xcode Project
-        run: xcodebuild clean -workspace ios/Runner.xcworkspace -scheme Runner -configuration Release
-
-      - name: Build and Resolve Swift Dependencies
-        run: xcodebuild -resolvePackageDependencies -workspace ios/Runner.xcworkspace -scheme Runner -configuration Release
-
-      - name: Print Xcode Environment Variables
-        run: |
-          echo $PATH
-          xcode-select -p
-
-      - name: Create IPA directory in root directory
-        run: mkdir -p IPA
-
-      - name: Building IPA
+      - name: Build IPA
         run: flutter build ipa --release --no-codesign --target=lib/main_dev.dart --export-options-plist=ios/ExportOptions.plist
 
-      - name: Convert xcarchive to IPA
-        run: xcodebuild -exportArchive -archivePath /Users/runner/work/mobilewise_action/mobilewise_action/build/ios/archive/Runner.xcarchive -exportPath IPA/MobileWise.ipa -exportOptionsPlist ios/ExportOptions.plist
+      - name: Verify Optimization Setting
+        run: grep -A1 'SWIFT_OPTIMIZATION_LEVEL' ios/Runner.xcodeproj/project.pbxproj | grep '-Osize'
 
-      - name: Compress IPA
-        run: tar -czf IPA/MobileWiseCompressed.tar.gz IPA/MobileWise.ipa
+      - name: Verify Bitcode Setting
+        run: grep -B1 'ENABLE_BITCODE' ios/Runner.xcodeproj/project.pbxproj | grep 'YES' 
 
-      - name: Upload iOS IPA as artifact
+      - name: Analyze IPA Architectures
+        run: lipo -info IPA/MobileWise.ipa
+        id: analyze_architectures
+
+      - name: Strip IPA (if needed)
+        if: contains(steps.analyze_architectures.outputs.stdout, 'armv7')
+        run: |
+          cd IPA
+          lipo -remove armv7 -output MobileWiseStripped.ipa MobileWise.ipa 
+          mv MobileWiseStripped.ipa MobileWise.ipa
+
+      - name: Track libswiftCore.dylib size
+        run: |
+          swift_lib_path=$(find Payload -name libswiftCore.dylib)
+          swift_lib_size=$(stat -f%z "$swift_lib_path")
+          echo "libswiftCore.dylib size: $swift_lib_size bytes"
+          # Store this value to track across builds 
+
+      - name: Compress iOS build directory
+        run: tar -czf ios_build.tar.gz ios
+
+      - name: Upload iOS build as artifact
         uses: actions/upload-artifact@v2
         with:
-         name: ios-ipa
-         path: IPA/MobileWiseCompressed.tar.gz
+          name: ios-build-artifact
+          path: ios_build.tar.gz
 
-
-     # - name: Analyze IPA contents
-      #  run: lipo -info IPA/MobileWise.ipa
-
-     # - name: Compress iOS build directory
-      #  run: tar -czf ios_build.tar.gz ios
-
-      #- name: Upload iOS build as artifact
-       # uses: actions/upload-artifact@v2
-        #with:
-         # name: ios-build-artifact
-          #path: ios_build.tar.gz
-  
       - name: List contents of the IPA directory with sizes
         run: |
           ls -Rl IPA
