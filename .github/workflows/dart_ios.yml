@@ -51,7 +51,7 @@ jobs:
         run: mkdir -p IPA
 
       - name: Build xcarchive
-        run: xcodebuild archive -workspace ios/Runner.xcworkspace -scheme Runner -configuration Release -archivePath IPA/Runner.xcarchive
+        run: xcodebuild archive -workspace ios/Runner.xcworkspace -scheme Runner -configuration Release -archivePath IPA/Runner.xcarchive --export-options-plist=ios/ExportOptions.plist
 
       - name: Extract Runner.app from xcarchive
         run: |
