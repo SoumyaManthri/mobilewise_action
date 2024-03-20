@@ -84,8 +84,6 @@ jobs:
       - name: Build and export .ipa (Distribution)
         run: |
           PROVISIONING_PROFILE_UUID="23aa3adc-6691-44c1-b266-b82a19b0c3b9"
-          
-          # Create a temporary export options plist file
           echo '<?xml version="1.0" encoding="UTF-8"?>
           <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
           <plist version="1.0">
@@ -107,7 +105,6 @@ jobs:
               </dict>
               <key>thinning</key>
               <string>none</string>
-              #<string>&lt;thin-for-all-variants&gt;</string>
           </dict>
           </plist>' > ExportOptions.plist
           
