@@ -1,25 +1,27 @@
-name: Build IPA from Runner.xcarchive
+name: Flutter_iOS_DISTRIBUTION
 
 on:
   workflow_dispatch:
     branches: [main]
 
 jobs:
-  build_ios_adhoc:
+  build_ios_distribution:
     runs-on: macos-latest
 
     steps:
       - name: Checkout the code
         uses: actions/checkout@v2
 
-      - name: Install Flutter
-        uses: subosito/flutter-action@v2
-        with:
-          flutter-version: '3.16'
-          channel: 'stable'
-          cache: true
+      - name: Create new branch
+        id: create_branch
+        run: |
+          git checkout -b new_branch
 
-      - name: Set up Code Signing 
+      - name: Clean Derived Data
+        run: |
+          rm -rf ~/Library/Developer/Xcode/DerivedData
+
+      - name: Install Apple Certificate (Distribution)
         uses: apple-actions/import-codesign-certs@v1
         with:
           p12-file-base64: ${{ secrets.IOS_DISTRIBUTION }}
@@ -34,40 +36,95 @@ jobs:
           mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
           cp $PP_PATH ~/Library/MobileDevice/Provisioning\ Profiles
 
-      - name:  Flutter setup and dependencies
+      - name: Install and set Flutter version
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.16'
+          channel: 'stable'
+          cache: true
+
+      - name: Restore packages
         run: |
           flutter clean
           flutter pub get
-          cd ios 
+
+      - name: Reinstall CocoaPods
+        run: |
+          cd ios
           rm -rf Pods/ Podfile.lock
           pod deintegrate
-          pod install 
+          pod install
           cd ..
 
-      - name: Clean and Build Xcode Project
-        run: xcodebuild clean build -workspace ios/Runner.xcworkspace -scheme Runner -configuration Release
+      - name: Print current working directory
+        run: pwd
 
-      - name: Create IPA directory
+      - name: List contents of the directory
+        run: |
+          ls -l
+          echo "Flutter Root: ${{ env.FLUTTER_ROOT }}"
+          cd ${{ env.FLUTTER_ROOT }}
+          ls -R
+          ls -l
+
+      - name: Clean Xcode Project
+        run: xcodebuild clean -workspace ios/Runner.xcworkspace -scheme Runner -configuration Release
+
+      - name: Build and Resolve Swift Dependencies
+        run: xcodebuild -resolvePackageDependencies -workspace ios/Runner.xcworkspace -scheme Runner -configuration Release
+
+      - name: Print Xcode Environment Variables
+        run: |
+          echo $PATH
+          xcode-select -p
+
+      - name: Create IPA directory in root
         run: mkdir -p IPA
 
-      - name: Build xcarchive
-        run: xcodebuild archive -workspace ios/Runner.xcworkspace -scheme Runner -configuration Release -archivePath IPA/Runner.xcarchive -exportOptionsPlist ExportOptions.plist      
-      - name: Extract Runner.app from xcarchive
+      - name: Build and export .ipa (Distribution)
         run: |
-          mkdir -p IPA/Payload
-          cp -R IPA/Runner.xcarchive/Products/Applications/Runner.app IPA/Payload
-
-      - name: Create IPA from Runner.app
-        run: |
+          PROVISIONING_PROFILE_UUID="23aa3adc-6691-44c1-b266-b82a19b0c3b9"
+          
+          # Create a temporary export options plist file
+          echo '<?xml version="1.0" encoding="UTF-8"?>
+          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+          <plist version="1.0">
+          <dict>
+              <key>compileBitcode</key>
+              <true/>
+              <key>method</key>
+              <string>app-store</string>
+              <key>signingStyle</key>
+              <string>manual</string>
+              <key>stripSwiftSymbols</key>
+              <true/>
+              <key>teamID</key>
+              <string>4RD8TSB5PJ</string>
+              <key>provisioningProfiles</key>
+              <dict>
+                  <key>com.vassar.mobilewise.flutter-mobilewise</key>
+                  <string>23aa3adc-6691-44c1-b266-b82a19b0c3b9</string>
+              </dict>
+              <key>thinning</key>
+              <string>&lt;thin-for-all-variants&gt;</string>
+          </dict>
+          </plist>' > ExportOptions.plist
+          
+          xcrun xcodebuild -workspace ios/Runner.xcworkspace -scheme Runner -configuration Release -archivePath IPA/app.xcarchive archive
+          xcrun xcodebuild -exportArchive -archivePath IPA/app.xcarchive -exportOptionsPlist ExportOptions.plist -exportPath IPA/mobileapp.ipa -verbose
           cd IPA
-          zip -qyr MobileWise.ipa Payload
+          mkdir Payload
+          ls -la app.xcarchive/Products/Applications
+          cp -R app.xcarchive/Products/Applications/Runner.app Payload
+          zip -qyr mobileapp.ipa Payload
           rm -rf Payload
 
-      - name: Verify IPA contents
-        run: unzip -l IPA/MobileWise.ipa
+      - name: List contents of the IPA directory
+        run: |
+          ls -R IPA
 
       - name: Upload IPA as artifact
-        uses: actions/upload-artifact@v2 
+        uses: actions/upload-artifact@v2
         with:
           name: ios-ipa
-          path: IPA/MobileWise.ipa
+          path: IPA/mobileapp.ipa
