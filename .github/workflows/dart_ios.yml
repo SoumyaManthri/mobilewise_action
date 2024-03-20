@@ -112,27 +112,27 @@ jobs:
           
           xcrun xcodebuild -workspace ios/Runner.xcworkspace -scheme Runner -configuration Release -archivePath IPA/app.xcarchive archive
           xcrun xcodebuild -exportArchive -archivePath IPA/app.xcarchive -exportOptionsPlist ExportOptions.plist -exportPath IPA/mobileapp.ipa -verbose
-          cd IPA
-          mkdir -p Payload
-          cp -R app.xcarchive/Products/Applications/Runner.app Payload/
+          #cd IPA
+          #mkdir -p Payload
+          #cp -R app.xcarchive/Products/Applications/Runner.app Payload/
 
           # Check if the Runner.app was copied successfully
-          if [ ! -d "Payload/Runner.app" ]; then
-            echo "Error: Runner.app not found or failed to copy."
-            exit 1
-          fi
+          #if [ ! -d "Payload/Runner.app" ]; then
+           # echo "Error: Runner.app not found or failed to copy."
+            #exit 1
+          #fi
           
           # Zip the Payload directory
-          zip -qyr mobileapp.ipa Payload
+          #zip -qyr mobileapp.ipa Payload
           
           # Check if the zip command succeeded
-          if [ $? -ne 0 ]; then
-            echo "Error: Failed to create the IPA file."
-            exit 1
-          fi
+          #if [ $? -ne 0 ]; then
+           # echo "Error: Failed to create the IPA file."
+            #exit 1
+          #fi
           
           # Clean up
-          rm -rf Payload
+          #rm -rf Payload
 
 
       - name: List contents of the IPA directory
