@@ -1,0 +1,89 @@
+name: Flutter_iOS_DISTRIBUTION_distribution
+
+on:
+  workflow_dispatch:
+    branches: [main]
+
+jobs:
+  build_ios_distribution:
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout the code
+        uses: actions/checkout@v2
+
+      - name: Create new branch
+        id: create_branch
+        run: |
+          git checkout -b new_branch
+
+      # Add steps to clean Derived Data, install certificates, and provisioning profiles
+
+      - name: Install and set Flutter version
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.16'
+          channel: 'stable'
+          cache: true
+
+      - name: Restore packages
+        run: |
+          flutter clean
+          flutter pub get
+
+      - name: Reinstall CocoaPods
+        run: |
+          cd ios
+          rm -rf Pods/ Podfile.lock
+          pod deintegrate
+          pod install
+          cd ..
+
+      # Add steps to print current working directory, list contents, clean Xcode project, and resolve Swift dependencies
+
+      - name: Create IPA directory in root
+        run: mkdir -p IPA
+
+      - name: Build and export .ipa (Distribution)
+        run: |
+          PROVISIONING_PROFILE_UUID="23aa3adc-6691-44c1-b266-b82a19b0c3b9"
+          
+          # Create a temporary export options plist file
+          echo '<?xml version="1.0" encoding="UTF-8"?>
+          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+          <plist version="1.0">
+          <dict>
+              <key>compileBitcode</key>
+              <false/>
+              <key>method</key>
+              <string>app-store</string>
+              <key>signingStyle</key>
+              <string>manual</string>
+              <key>stripSwiftSymbols</key>
+              <true/>
+              <key>teamID</key>
+              <string>4RD8TSB5PJ</string>
+              <key>provisioningProfiles</key>
+              <dict>
+                  <key>com.vassar.mobilewise.flutter-mobilewise</key>
+                  <string>23aa3adc-6691-44c1-b266-b82a19b0c3b9</string>
+              </dict>
+              <key>thinning</key>
+              <string>none</string>
+          </dict>
+          </plist>' > ExportOptions.plist
+          
+          flutter build ios --flavor production --release --no-codesign --target lib/main_production.dart
+          xcodebuild -resolvePackageDependencies -workspace ios/Runner.xcworkspace -scheme production -configuration Release-production
+          xcodebuild -workspace ios/Runner.xcworkspace -scheme production -configuration Release-production DEVELOPMENT_TEAM=4RD8TSB5PJ -sdk 'iphoneos' -destination 'generic/platform=iOS' -archivePath IPA/app.xcarchive PROVISIONING_PROFILE_SPECIFIER="NEW_DISTRIBUTION_IOS.mobileprovision" clean archive CODE_SIGN_IDENTITY="Apple Distribution"
+          xcodebuild -exportArchive -archivePath IPA/app.xcarchive -exportPath IPA/mobileapp.ipa -exportOptionsPlist ExportOptions.plist
+
+      - name: List contents of the IPA directory
+        run: |
+          ls -R IPA
+
+      - name: Upload IPA as artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: ios-ipa
+          path: IPA/mobileapp.ipa
