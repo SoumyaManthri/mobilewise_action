@@ -75,7 +75,7 @@ jobs:
           
           flutter build ios --release --no-codesign --target=lib/main_dev.dart 
           xcodebuild -resolvePackageDependencies -workspace ios/Runner.xcworkspace -scheme Runner -configuration Release
-          xcodebuild -workspace ios/Runner.xcworkspace -scheme Runner -configuration Release DEVELOPMENT_TEAM=4RD8TSB5PJ -sdk 'iphoneos' -destination 'generic/platform=iOS' -archivePath IPA/app.xcarchive PROVISIONING_PROFILE_SPECIFIER="NEW_DISTRIBUTION_IOS.mobileprovision" clean archive CODE_SIGN_IDENTITY="Apple Distribution"
+          xcodebuild -workspace ios/Runner.xcworkspace -scheme Runner -configuration Release DEVELOPMENT_TEAM=4RD8TSB5PJ -sdk 'iphoneos' -destination 'generic/platform=iOS' -archivePath IPA/app.xcarchive PROVISIONING_PROFILE_SPECIFIER="NEW_DISTRIBUTION_IOS.mobileprovision" clean archive CODE_SIGN_IDENTITY="iPhone Distribution"
           xcodebuild -exportArchive -archivePath IPA/app.xcarchive -exportPath IPA/mobileapp.ipa -exportOptionsPlist ExportOptions.plist
             
 
