@@ -106,11 +106,12 @@ jobs:
                   <string>23aa3adc-6691-44c1-b266-b82a19b0c3b9</string>
               </dict>
               <key>thinning</key>
-              <string>&lt;thin-for-all-variants&gt;</string>
+              <string>none</string>
+              #<string>&lt;thin-for-all-variants&gt;</string>
           </dict>
           </plist>' > ExportOptions.plist
           
-          xcrun xcodebuild -workspace ios/Runner.xcworkspace -scheme Runner -configuration Release -archivePath IPA/app.xcarchive archive
+          xcrun xcodebuild -workspace ios/Runner.xcworkspace -scheme Runner -configuration Release -archivePath IPA/app.xcarchive archive OTHER_SWIFT_FLAGS="-Onone -Xfrontend -serialize-debugging-options" GCC_OPTIMIZATION_LEVEL="s"
           xcrun xcodebuild -exportArchive -archivePath IPA/app.xcarchive -exportOptionsPlist ExportOptions.plist -exportPath IPA/mobileapp.ipa -verbose
           #cd IPA
           #mkdir -p Payload
